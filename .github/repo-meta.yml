@@ -1,0 +1,19 @@
+# GitHub repository metadata — applied to the "About" box + topics.
+# description ≤ 350 chars; 8–20 topics.
+description: >-
+  The agent context layer — converge messy multi-session AI-agent work into one lean,
+  LIVING, spec-centered source of truth that doesn't rot. Organize docs by lifetime, keep
+  the spec generative, and let an agent (or a human three months later) build from it.
+topics:
+  - agent-skills
+  - ai-agents
+  - claude
+  - claude-code
+  - context-engineering
+  - knowledge-base
+  - single-source-of-truth
+  - spec-driven-development
+  - documentation
+  - adr
+  - methodology
+  - llm
