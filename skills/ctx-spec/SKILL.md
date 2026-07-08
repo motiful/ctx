@@ -4,23 +4,27 @@ description: Writes specs, ADRs, architecture and design docs that an AI coding 
 license: MIT
 metadata:
   author: motiful
-  version: "1.3"
+  version: "1.4"
 ---
 
 # ctx-spec — Write Docs an Agent Can Build From
 
 > The lifetime model and shared conventions live in [`../ctx`](../ctx/SKILL.md); this is the spec / ADR / design how-to layer.
 
-## The grounding — why a spec is not a report
+## How a spec is written — the writing standard
 
-The whole model rests on one professional distinction, named four ways. A spec holds **Reference / Normative / prescriptive** content; rationale and comparison go to a **report** (Explanation) or an **ADR** (the why).
+A spec is an **authored doc an agent reads once and builds from**. Four orthogonal axes govern every line; each governs a different thing, so they compose without clashing:
 
-- **Diátaxis** *(Procida, [diataxis.fr](https://diataxis.fr))* — a spec = **Reference**: neutral, normative, states conclusions and constraints; no teaching, no comparison. A report = **Explanation**: discursive, disposable. Mixing them ("**mode bleed**") is the anti-pattern.
-- **Normative vs Informative** *(ISO/IEEE/IETF/W3C drafting convention)* — binding requirement text vs explanatory notes. Rationale, examples, and comparisons are **informative** and are segregated out of the requirement body.
-- **RFC 2119 / BCP 14** *(IETF; all-caps only per [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174))* — **MUST / SHOULD / MAY** are the grep-able binding keywords. Lower-case "must" is prose, not a requirement.
-- **Prescriptive vs Descriptive** *(technical-writing convention)* — a spec is **prescriptive** (mandated end-state, options stripped); a report is **descriptive** (what is / what was considered).
+1. **Status — normative vs informative.** A spec states **conclusions and constraints** (normative). A note, example, or figure is **never** a requirement (informative). State a binding claim as a MUST/SHALL line — don't let a diagram imply it.
+2. **Strength — RFC 2119.** `MUST / SHOULD / MAY`, all-caps, grep-able (all-caps only per [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174)). Lower-case "must" is prose, not a requirement.
+3. **Why-discipline (IRB) — which "why" may stay.** Classify every "why" by what it does for the agent that reads the spec:
+   - **INTENT** — a one-clause *so-that* that scopes a rule (`X, so that Y`) so the agent generalizes to cases the spec never enumerated. **Stays inline** with the rule.
+   - **RATIONALE** — the justification of a choice among alternatives (`chose X over Y because Z`). **Goes to an ADR** (`Considered options` + `Decision outcome`), never the spec body.
+   - **BACKGROUND** — context the model already knows, or history that changes no action. **Cut** it.
+   - **Delete-test:** delete the clause — does an edge-case action change? *Generalizes the rule* → INTENT (keep). *Only justifies a past choice* → RATIONALE (→ ADR). *Nothing* → BACKGROUND (cut).
+4. **Granularity** — specify the **constraint, not the mechanism**; testable (EARS), versioned. Its own section below (the most important one).
 
-**Takeaway:** if a spec teaches, compares options, or narrates what happened, it has bled Explanation into Reference — move that out. Rationale → an ADR; comparison / review thinking → a report.
+**The one anti-pattern (mode bleed):** a spec that teaches, compares options, or narrates what happened has let Explanation leak into a normative doc. Rationale → an ADR; comparison / review thinking → a report. The single "why" that *belongs* in a spec is **INTENT** — it carries normative force, because deleting it changes conformance at the edges.
 
 ## Execution Procedure
 
@@ -238,11 +242,11 @@ Follows the lifetime class (global rule in `../ctx/references/consistency.md § 
 
 > The MUST/NEVER lines below are the **domain** constraints for spec / ADR / design authoring — binding, load-before-act; they fire when a spec, decision, or design doc is written. The **cross-cutting** rules (single-source, same-change, verify-canonical, the gate) live in [`../ctx/references/consistency.md`](../ctx/references/consistency.md) and apply on top. The formats/templates above teach; these lines bind.
 
-### Spec = Reference mode
+### Status & why-discipline
 
-- **MUST** write a spec in Reference mode: **conclusions + constraints only**. **NEVER** embed teaching, tutorials, discursive narrative, or option-comparison in a spec — that is Explanation bleeding into Reference; move it to a `reports/` doc (for review) or an ADR (the why).
-- **MUST NOT** embed rationale / "why we chose X over Y" in a spec → that belongs in the ADR's `Considered options` + `Decision outcome`.
-- **NEVER** treat a figure, example, or note as a binding requirement — illustrative content is informative, not normative (W3C/IEEE drafting rule). State the normative claim as a MUST/SHALL line; do not let a diagram imply it.
+- **MUST** write a spec as **conclusions + constraints** (normative content). **NEVER** embed teaching, tutorials, discursive narrative, or option-comparison in a spec — that is Explanation bleeding into a normative doc; move it to a `reports/` doc (for review) or an ADR (the why).
+- **MAY** carry **INTENT** inline — a one-clause *so-that* that scopes a rule so the agent generalizes correctly (`X, so that Y`); this is the one "why" that stays, because deleting it changes edge-case conformance. **MUST NOT** embed **RATIONALE** ("why we chose X over Y") → that belongs in the ADR's `Considered options` + `Decision outcome`. **MUST** cut **BACKGROUND** (context the model already knows / history that changes no action).
+- **NEVER** treat a figure, example, or note as a binding requirement — illustrative content is informative, not normative. State the normative claim as a MUST/SHALL line; do not let a diagram imply it.
 
 ### Testable, versioned, machine-readable
 
