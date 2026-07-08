@@ -4,16 +4,12 @@ description: Sets up and orchestrates a ctx knowledge base — a lean, living si
 license: MIT
 metadata:
   author: motiful
-  version: "2.1"
+  version: "2.2"
 ---
 
 # ctx — a living, spec-centered single source of truth
 
-## The problem this solves
-
-Long, multi-session AI-agent research/design produces documents that **rot** into a pile that is **redundant, contradictory, and stale**. Symptoms: docs multiply endlessly; changing one thing forces chasing a chain of edits across many docs; old docs go 50%-true/50%-false so you can't tell what's current; the process order feels chaotic ("research first or design first?"); dozens of review reports pile up and merging their conclusions becomes its own unsolved problem.
-
-Root cause: organizing docs by **pipeline stage** (requirements→research→design→decisions→progress) leaves a persistent, editable, go-stale doc at every stage.
+ctx sets up and runs a knowledge base that stays a lean, living single source of truth across many agent sessions. Its own job is small and load-bearing — **scaffold** the folder, **classify** every finding by lifetime, **route** the domain work to a companion, and run the **gate**; the heavy domain work lives in the companions. This is the entry point: read the model (classify depends on it), then run the procedure and route.
 
 ## The model — two ideas
 
@@ -45,7 +41,71 @@ Order does not matter. Whatever you produce, classify it:
 4. **Raw / uncertain: notes, prompts, research dumps, comparisons** → `scratch/`, non-authoritative.
 5. **Thinking laid out for a human to review** → `reports/` (disposable HTML; see the **ctx-report** skill).
 
-### Theory & evidence — not a separate class
+## Execution Procedure
+
+```
+build_or_maintain_kb(project_or_pile) → living_kb
+
+# STEP 0 — Load the cross-cutting constraints (four rules + format conventions)
+read("references/consistency.md")        # single-source · same-change · verify-canonical · gate + numbering/archive-by-class
+ensure ctx/ skeleton exists — scaffold from assets/ctx-skeleton/ (progress/ · spec/ · decisions/ · reports/ · scratch/ · README.md)
+
+# STEP 1 — Classify by LIFETIME, not stage (write from any direction; NOT a waterfall)
+for each finding / note / doc:
+    cls = classify(finding)
+        # current product truth         → spec/ or overview.md   (edit in place)
+        # a MADE choice + why + rejected → decisions/NNNN         (append; supersede, never rewrite)
+        # where we are / what next       → progress/              (edit in place; pointers only)
+        # raw / uncertain / research      → scratch/               (non-authoritative; not a scan entry)
+        # normative extract of a theory   → spec/ + decisions/     (concept can be normative)
+
+# STEP 2 — Converge scattered sources into the KB (any consolidation of ≥2 sources)
+if consolidating notes / reports / subagent outputs:
+    Skill("ctx-merge", sources)          # disposition ledger; a drop is a recorded decision, never silent
+
+# STEP 3 — Write build-grade docs
+if writing / restructuring a spec, ADR, or design doc:
+    Skill("ctx-spec", target)            # formats, granularity, ADR boundary + numbering, spec/design/, the writing standard
+
+# STEP 4 — Track progress / hand off between sessions
+if updating work state, opening a subtree, or handing off to a new session:
+    Skill("ctx-progress", ctx/progress/) # single-file-or-tree, frontmatter, handoff, archive-when-long
+
+# STEP 5 — Producing / distilling / merging a report for human review?
+if writing or distilling an HTML report for the human:
+    Skill("ctx-report", ctx/reports/)        # report format · distillation · rolling-merge · archive
+
+# STEP 6 — Apply the cross-cutting constraints (mandatory before finishing any multi-doc edit or behavior-changing commit)
+apply("references/consistency.md")       # verify single-source · same-change (incl. code↔doc) · verify-against-canonical · the gate — fix any violation before committing
+
+# STEP 7 — Stop (JBGE): smallest living-doc set that lets an agent build correctly. Do not over-document.
+```
+
+Each `read()` and `Skill()` above is a decision-layer entry — enter the module when the step runs; do not paraphrase it here.
+
+## When to call the companions
+
+**You (the agent) classify and route; the user never hand-picks a companion.** The user describes their work in plain language ("nail down the design for X, then build it" / "merge these notes" / "where does this finding go?"). Read the intent and route by what it needs. When one ask spans **both** a durable contract and transient work — the common *"settle the docs, then execute"* case — produce **BOTH**: the durable "what must be true" → `spec/` (via **ctx-spec**) and the doing/tracking → `progress/` (via **ctx-progress**), linked by `REQ-### ↔ T###`. Never ask the user to choose "spec or progress" — that classification is this skill's job. Signals: *should/must/design/architecture/requirements* → durable → spec; *let's do/plan/next/where are we* → transient → progress; *a pile of notes to settle* → **ctx-merge**.
+
+- **Converging scattered notes / many reports / subagent outputs into the KB** → **ctx-merge** (merge discipline + human-adjudicated routing). Use it for any consolidation of ≥2 sources — a silent merge drops content.
+- **Writing or restructuring a spec, ADR, architecture doc, or design/design-system doc** → **ctx-spec** (formats, templates, granularity, ADR content boundary; `spec/design/` and the writing standard live here).
+- **Updating work state, opening a progress subtree, or handing off to a new session** → **ctx-progress** (single-file-or-tree progress, frontmatter, handoff protocol, archive-when-long).
+- **Writing an HTML report for the human to review, distilling their comments, or merging a pile of reports** → **ctx-report** (report format, keep/drop/unsure distillation, rolling-merge, archive-aside).
+- **Bringing an existing (brownfield) repo under ctx — where `/ctx` mounts, in-repo vs external symlink, onboarding a messy tree** → **ctx-adopt** (minimal-disruption onboarding; routes the actual doc-writing to the domain skills).
+
+The cross-cutting hard constraints — single-source · same-change (incl. code↔doc) · verify-against-canonical · the gate — are **not a companion you route to**; they live in **[`references/consistency.md`](references/consistency.md)**, which every skill (and STEP 0/6 above) loads before it commits.
+
+---
+
+*The rest of this file is orientation — the problem ctx solves, the finer classification calls, the folder shape, and honest limits. The procedure above is the operative part; read on when you need the why.*
+
+## The problem this solves
+
+Long, multi-session AI-agent research/design produces documents that **rot** into a pile that is **redundant, contradictory, and stale**. Symptoms: docs multiply endlessly; changing one thing forces chasing a chain of edits across many docs; old docs go 50%-true/50%-false so you can't tell what's current; the process order feels chaotic ("research first or design first?"); dozens of review reports pile up and merging their conclusions becomes its own unsolved problem.
+
+Root cause: organizing docs by **pipeline stage** (requirements→research→design→decisions→progress) leaves a persistent, editable, go-stale doc at every stage.
+
+## Theory & evidence — not a separate class
 
 Psychology, research evidence, a chosen theoretical framework: **conceptual content can absolutely be normative** (normative = "is this binding on what we build", not "is it concrete vs abstract"). So split it:
 
@@ -55,19 +115,13 @@ Psychology, research evidence, a chosen theoretical framework: **conceptual cont
 
 Reliability flows from the SOT's reference: a disposable file earns trust *only* where a SOT doc links to it.
 
-### Disposable is NOT a scan entry (false-positive guard)
+## Disposable is NOT a scan entry (false-positive guard)
 
 `scratch/` and `reports/` are non-SOT: they are not a scan / entry point. A disposable file is opened *only* where a SOT doc (spec / decision / progress) explicitly links to it — deep-scanning `scratch/` to "understand the project" surfaces rejected and obsolete ideas as false positives, as if they were current truth. (This is a model characterization; its binding MUST/NEVER form is **[`references/consistency.md`](references/consistency.md) Rule 1**.)
 
-### spec vs report (Reference vs Explanation)
+## Normative vs informative — spec vs report
 
-The split above is the Diátaxis distinction: a **spec = Reference** (neutral, normative, states conclusions and constraints — no teaching, no comparison); a **report = Explanation** (discursive, disposable). A spec that teaches or compares options has bled Explanation into Reference — move that to a report (for review) or an ADR (the why). The full grounding (Diátaxis · normative/informative · RFC-2119 MUST/SHOULD/MAY) lives in **ctx-spec**.
-
-## Cross-cutting rules & the read-side habit (pointers, not mechanics)
-
-The prescriptive cross-cutting MUSTs — **single-source · same-change (incl. code↔doc) · verify-against-canonical · the gate** — plus the shared format conventions live in **[`references/consistency.md`](references/consistency.md)**, which every skill loads before it commits. In particular the **gate** (author the acceptance checklist *before* you execute; validate before you claim "done") is **consistency.md Rule 4** — `ctx` names the pattern behind spec acceptance-criteria / progress task-completion / report self-verification / the ctx-folder DoD; consistency.md holds the mechanics.
-
-**Read-side habit** (why the append-only trail earns its keep): before an architecturally-significant choice, the `decisions/` trail + reject log get scanned so a settled question isn't re-litigated and a rejected concept isn't reintroduced — a decision nobody consults is just history. Its binding form is **ctx-spec § Hard constraints** (ADR discipline); the reject log feeds from **ctx-merge**.
+The split above is a **status** distinction: a **spec** states conclusions and constraints (normative, build-grade); a **report** is discursive and disposable (informative). A spec that teaches, compares options, or narrates what happened has let informative content leak in — move it to a report (for review) or an ADR (the why). The one "why" that *stays* in a spec is its **INTENT** (a one-clause *so-that* that scopes a rule). The full writing standard — the four axes (normative/informative · RFC-2119 · IRB why-discipline · granularity) — lives in **ctx-spec**.
 
 ## The canonical folder
 
@@ -100,47 +154,11 @@ The skeleton above is the *model* — what a correct ctx folder looks like. Whet
 
 When the deliverable is a **shippable artifact** (a skill, an app, a video) whose docs must NOT ship with it, keep the docs in a sibling **`<name>-ctx/`** (external, never shipped), managed by *this* methodology. **That `<name>-ctx/` folder itself IS the knowledge root** — it plays the role of `ctx/`, so its children are `spec/ decisions/ progress/ reports/ scratch/` **directly** (no nested `ctx/`). The published artifact = the output; the external store = *why it is the way it is* (its spec + its ADRs). This is where a design decision like "we **supersede** old ADRs in place (never archive them), because a superseded decision is live knowledge" is recorded — so the reasoning is never lost. **This collection dogfoods it exactly: this skill ships as `ctx/`, its own making lives in the sibling `ctx-ctx/`.**
 
-## Execution Procedure
+## Cross-cutting rules & the read-side habit (pointers, not mechanics)
 
-```
-build_or_maintain_kb(project_or_pile) → living_kb
+The prescriptive cross-cutting MUSTs — **single-source · same-change (incl. code↔doc) · verify-against-canonical · the gate** — plus the shared format conventions live in **[`references/consistency.md`](references/consistency.md)**, which every skill loads before it commits. In particular the **gate** (author the acceptance checklist *before* you execute; validate before you claim "done") is **consistency.md Rule 4** — `ctx` names the pattern behind spec acceptance-criteria / progress task-completion / report self-verification / the ctx-folder DoD; consistency.md holds the mechanics.
 
-# STEP 0 — Load the cross-cutting constraints (four rules + format conventions)
-read("references/consistency.md")        # single-source · same-change · verify-canonical · gate + numbering/archive-by-class
-ensure ctx/ skeleton exists — scaffold from assets/ctx-skeleton/ (progress/ · spec/ · decisions/ · reports/ · scratch/ · README.md)
-
-# STEP 1 — Classify by LIFETIME, not stage (write from any direction; NOT a waterfall)
-for each finding / note / doc:
-    cls = classify(finding)
-        # current product truth         → spec/ or overview.md   (edit in place)
-        # a MADE choice + why + rejected → decisions/NNNN         (append; supersede, never rewrite)
-        # where we are / what next       → progress/              (edit in place; pointers only)
-        # raw / uncertain / research      → scratch/               (non-authoritative; not a scan entry)
-        # normative extract of a theory   → spec/ + decisions/     (concept can be normative)
-
-# STEP 2 — Converge scattered sources into the KB (any consolidation of ≥2 sources)
-if consolidating notes / reports / subagent outputs:
-    Skill("ctx-merge", sources)          # disposition ledger; a drop is a recorded decision, never silent
-
-# STEP 3 — Write build-grade docs
-if writing / restructuring a spec, ADR, or design doc:
-    Skill("ctx-spec", target)            # formats, granularity, ADR boundary + numbering, spec/design/, spec-vs-report grounding
-
-# STEP 4 — Track progress / hand off between sessions
-if updating work state, opening a subtree, or handing off to a new session:
-    Skill("ctx-progress", ctx/progress/) # single-file-or-tree, frontmatter, handoff, archive-when-long
-
-# STEP 5 — Producing / distilling / merging a report for human review?
-if writing or distilling an HTML report for the human:
-    Skill("ctx-report", ctx/reports/)        # report format · distillation · rolling-merge · archive
-
-# STEP 6 — Apply the cross-cutting constraints (mandatory before finishing any multi-doc edit or behavior-changing commit)
-apply("references/consistency.md")       # verify single-source · same-change (incl. code↔doc) · verify-against-canonical · the gate — fix any violation before committing
-
-# STEP 7 — Stop (JBGE): smallest living-doc set that lets an agent build correctly. Do not over-document.
-```
-
-Each `read()` and `Skill()` above is a decision-layer entry — enter the module when the step runs; do not paraphrase it here.
+**Read-side habit** (why the append-only trail earns its keep): before an architecturally-significant choice, the `decisions/` trail + reject log get scanned so a settled question isn't re-litigated and a rejected concept isn't reintroduced — a decision nobody consults is just history. Its binding form is **ctx-spec § Hard constraints** (ADR discipline); the reject log feeds from **ctx-merge**.
 
 ## The loop
 
@@ -150,18 +168,6 @@ CHAOS (notes/conflicts) → debate/converge → scattered good questions + local
    → [ctx-spec] write build-grade specs → agent builds → tests are the arbiter of behavior
    → new conclusions fold back into the KB (edit spec in place / append decision). Repeat.
 ```
-
-## When to call the companions
-
-**You (the agent) classify and route; the user never hand-picks a companion.** The user describes their work in plain language ("nail down the design for X, then build it" / "merge these notes" / "where does this finding go?"). Read the intent and route by what it needs. When one ask spans **both** a durable contract and transient work — the common *"settle the docs, then execute"* case — produce **BOTH**: the durable "what must be true" → `spec/` (via **ctx-spec**) and the doing/tracking → `progress/` (via **ctx-progress**), linked by `REQ-### ↔ T###`. Never ask the user to choose "spec or progress" — that classification is this skill's job. Signals: *should/must/design/architecture/requirements* → durable → spec; *let's do/plan/next/where are we* → transient → progress; *a pile of notes to settle* → **ctx-merge**.
-
-- **Converging scattered notes / many reports / subagent outputs into the KB** → **ctx-merge** (merge discipline + human-adjudicated routing). Use it for any consolidation of ≥2 sources — a silent merge drops content.
-- **Writing or restructuring a spec, ADR, architecture doc, or design/design-system doc** → **ctx-spec** (formats, templates, granularity, ADR content boundary; `spec/design/` and the spec-vs-report grounding live here).
-- **Updating work state, opening a progress subtree, or handing off to a new session** → **ctx-progress** (single-file-or-tree progress, frontmatter, handoff protocol, archive-when-long).
-- **Writing an HTML report for the human to review, distilling their comments, or merging a pile of reports** → **ctx-report** (report format, keep/drop/unsure distillation, rolling-merge, archive-aside).
-- **Bringing an existing (brownfield) repo under ctx — where `/ctx` mounts, in-repo vs external symlink, onboarding a messy tree** → **ctx-adopt** (minimal-disruption onboarding; routes the actual doc-writing to the domain skills).
-
-The cross-cutting hard constraints — single-source · same-change (incl. code↔doc) · verify-against-canonical · the gate — are **not a companion you route to**; they live in **[`references/consistency.md`](references/consistency.md)**, which every skill (and STEP 0/6 above) loads before it commits.
 
 ## Stop condition (don't over-build docs)
 
