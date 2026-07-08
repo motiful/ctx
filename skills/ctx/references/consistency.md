@@ -10,6 +10,8 @@ Every ctx skill loads this file before it commits. It has two parts:
 - **Part 1 · the four cross-cutting rules** — what you must DO to keep the one truth true, across *any* activity (writing a spec, tracking progress, merging, reporting, scaffolding).
 - **Part 2 · the shared format conventions** — how every folder numbers, archives, and indexes.
 
+The **Verification gate** at the end is the executable checklist — run it over what you touched before any commit; the two parts below are what it checks.
+
 The MUST/NEVER lines here are **binding hard constraints**, not advice — each skill loads and applies them before it commits. Both parts hold regardless of which skill is running. The lifetime classes (LIVING / APPEND-ONLY / DISPOSABLE) these rules assume are defined in [`../SKILL.md` § The model](../SKILL.md).
 
 ---

@@ -4,7 +4,7 @@ description: Bring an EXISTING project (brownfield) under ctx with minimal disru
 license: MIT
 metadata:
   author: motiful
-  version: "1.0"
+  version: "1.1"
 ---
 
 # ctx-adopt — bring an existing project under ctx, minimally
@@ -61,12 +61,6 @@ else (neither):         the RUNNING AGENT writes its own native file
 # never force the user to switch vendors
 ```
 
-**The `@AGENTS.md` bridge (why).** Claude Code auto-loads `CLAUDE.md` but does **not** read `AGENTS.md`;
-other agents (Codex/Cursor/Windsurf) read `AGENTS.md`. So when a project standardizes on `AGENTS.md`
-and a Claude Code session is doing the adoption, writing the pointer *only* to `AGENTS.md` is invisible
-to that very session. The fix is one line — a `CLAUDE.md` containing `@AGENTS.md` (CC's import syntax) —
-which makes CC pull in the whole `AGENTS.md` without duplicating its content or forcing a vendor switch.
-
 Fallback: the ctx skill `description` is system-prompt-resident and already says context lives in
 `/ctx`, so any agent with ctx loaded finds it even with no pointer file.
 Pointer line (one line): `Project context & docs live in ./ctx — managed by the ctx skills; apply their consistency rules when editing ctx docs.`
@@ -80,7 +74,7 @@ decides *how it is written to standard*:
 | Found | Lifetime → ctx home | Delegate the WRITING to |
 |---|---|---|
 | scattered notes / dated research to converge | (varies) | **ctx-merge** (atomic conclusions + disposition ledger) |
-| current-truth design / architecture | living → `spec/` | **ctx-spec** (Reference-mode spec + acceptance criteria) |
+| current-truth design / architecture | living → `spec/` | **ctx-spec** (normative spec + acceptance criteria) |
 | a decided choice + why | append-only → `decisions/` | **ctx-spec** (ADR format + status lifecycle) |
 | status / next-steps / TODO | living → `progress/` | **ctx-progress** (tree, frontmatter, handoff) |
 | a doc written for a human to review | disposable → `reports/` | **ctx-report** |
