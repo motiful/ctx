@@ -116,6 +116,15 @@ The single most important convention: **how you retire a stale artifact depends 
 
 **Why the split**: a superseded *component* is dead weight (nobody needs the old button's CSS) → archive it. A superseded *decision* is live knowledge (it prevents repeating a mistake) → keep it, marked superseded. Same word "old", opposite handling — because their lifetime classes differ.
 
+### Revise clean — the delta goes in the report/commit, not the doc
+
+When you revise an authored doc after feedback (a report comment, a review, a new decision), the doc is **rewritten to read as clean current-truth** — NEVER accreted with inline-diff / tracked-change / `~~old~~ → new` marks or a stack of `EDIT:` / `UPDATE:` notes. Those turn a LIVING doc into a Frankenstein and re-introduce the stale-inline-section rot the archive rule exists to prevent. Instead:
+
+- **The doc** stays one clean current-truth statement (LIVING localized edit), or a fresh clean version (foundational rewrite → archive the old verbatim first).
+- **The delta** — what changed and why — is narrated in the **accompanying report / reply and the commit message**, not in the doc body. "What changed" → the report or `git log`; "what's true now" → the clean doc.
+
+The old version is never lost — it lives where history belongs (git for a localized LIVING edit, an `archive/` move for a foundational rewrite or a DISPOSABLE report), not smeared through the current doc.
+
 Archive folders are **per-folder, plain name `archive/`** (no `_`/`.` prefix — `.archive` hides from ripgrep; `_archive` reads as "don't build" to static-site tools and doesn't sort to top).
 
 **Archive filename (single canonical convention — stated ONCE here, everywhere else links back):** an archived unit keeps its original stem and takes a date suffix at **day precision** — `<stem>.<YYYY-MM-DD>.md` (or `<stem>.<YYYY-MM-DD>/` for a folder unit). A **milestone label is an OPTIONAL prefix segment** when it aids scanning: `<stem>-<milestone>.<YYYY-MM-DD>.md`. Day precision (not month) so multiple archives of the same stem in one month stay distinct and lexically ordered. No skill restates this format string — `ctx-progress`, `ctx-spec`, and `spec/design/` all point here.

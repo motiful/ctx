@@ -4,7 +4,7 @@ description: Produces a disposable HTML report laid out for a human to read, com
 license: MIT
 metadata:
   author: motiful
-  version: "1.0"
+  version: "1.1"
 ---
 
 # ctx-report — write a report a human decides from, then dispose of it
@@ -55,11 +55,12 @@ Each `Skill()` above is a decision-layer entry — enter the module when the ste
 Default output is **HTML** (unless the task asks for video / markdown). Every report:
 
 1. **Plain language.** Write for a smart non-specialist; don't stack jargon.
-2. **Terms defined inline.** When a term appears, define it in a dedicated block (CN/EN + usage + source), not in passing. A report is **Explanation** mode, so first-use definitions are required — unlike a spec (Reference mode), which may use a term undefined and link out.
-3. **What + how first, why later.** Open with what's proposed and how it works; put rationale in later sections.
-4. **Self-contained + structurally self-verified.** DOCTYPE, balanced tags, anchors aligned. After writing, verify byte/tag counts — do not trust "looks right".
-5. **End by asking for a verdict.** Close with an explicit "for you to decide" list + options, so the reader gives a clear judgment instead of hunting for the open points. **Gate what lands in that list by confidence × blast-radius:** high-confidence + low-blast findings you can just state as done/recommended; anything high-blast OR low-confidence is what you escalate here as an explicit decision for the human. Don't bury a colossal-or-uncertain call in prose, and don't pad the verdict list with reversible things you were sure of.
-6. **Absolute paths for anything the reader opens.** Every path the report shows the human to open — the markdown/spec files a review links to, deliverables, "look at X" pointers — MUST be absolute (`/Users/…` or a `file:///…` URI), never `./`/`../` relative or a bare filename. The reader is in a terminal/browser where relative paths are not clickable, and a report is disposable — it carries no cwd context. (Cross-references *between* ctx docs stay repo-relative; this rule is only for paths surfaced to a human.)
+2. **Anchor each answer to its question.** A conclusion is only verifiable against the question it answers — a reader who lost the question can't judge whether the answer is right. Make the driving question explicit, at a granularity that fits the report's shape: a **response-to-asks** report (a review reply, a decision request) quotes each section's originating question **verbatim** from the asker at the section head; a **single-topic** narrative / audit states the driving question + trigger in the top framing. Not every report is one-question-per-section. (Mirrors rule 6: open anchored to the question you answer, close anchored to the question you still ask.)
+3. **Terms defined inline.** When a term appears, define it in a dedicated block (CN/EN + usage + source), not in passing. A report explains, so first-use definitions are required — unlike a spec (normative, terse), which may use a term undefined and link out.
+4. **What + how first, why later.** Open with what's proposed and how it works; put rationale in later sections.
+5. **Self-contained + structurally self-verified.** DOCTYPE, balanced tags, anchors aligned. After writing, verify byte/tag counts — do not trust "looks right".
+6. **End by asking for a verdict.** Close with an explicit "for you to decide" list + options, so the reader gives a clear judgment instead of hunting for the open points. **Gate what lands in that list by confidence × blast-radius:** high-confidence + low-blast findings you can just state as done/recommended; anything high-blast OR low-confidence is what you escalate here as an explicit decision for the human. Don't bury a colossal-or-uncertain call in prose, and don't pad the verdict list with reversible things you were sure of.
+7. **Absolute paths for anything the reader opens.** Every path the report shows the human to open — the markdown/spec files a review links to, deliverables, "look at X" pointers — MUST be absolute (`/Users/…` or a `file:///…` URI), never `./`/`../` relative or a bare filename. The reader is in a terminal/browser where relative paths are not clickable, and a report is disposable — it carries no cwd context. (Cross-references *between* ctx docs stay repo-relative; this rule is only for paths surfaced to a human.)
 
 ## After a comment: distillation (so nobody has to track what was reviewed)
 
