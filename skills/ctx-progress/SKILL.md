@@ -80,9 +80,11 @@ status: draft | active | stale | archived
 
 Optional when useful: `parent: ../README.md`, `owner`, `supersedes`. Status is one-way in practice: `draft → active → stale → archived`.
 
-## Exactly one active leaf
+## Exactly one active leaf (per track)
 
-**[LOAD-BEARING — hard constraint, see § Hard constraints below]** A well-formed progress tree (or flat file) has **exactly one `active` leaf** — the current position. More than one means status propagation failed; repair it before handing off. This is what lets a fresh session find "where we are" in one hop.
+**[LOAD-BEARING — hard constraint, see § Hard constraints below]** Within a **single track** (one workflow / session / subtree), a well-formed progress tree has **exactly one `active` leaf** — the current position; more than one *in the same track* means status propagation failed, so repair it. This is what lets a fresh session find "where we are" in one hop.
+
+When several tracks run in **parallel** — independent sessions on the same repo, the common multi-session case — the invariant is **per-track, not global**: a project has **as many active leaves as it has live tracks**, one per subtree. Parallel work graduates the flat file to a tree so each track owns its **own subtree file**, so that sessions touch different files, never one shared body — that is what keeps a single SOT collision-free when many sessions write at once. The **root index** lists the active tracks and is updated by **append / status-flip, never rewritten by N sessions at once**. A fresh session resumes a track from plain language ("continue X") — the agent opens or resumes that track's subtree; no handshake or lane declaration is needed. *(Running the code, isolating it, and the dev server are the ops layer's job, not progress tracking's; progress only records where a track is and — when useful — where its shared runtime is, to attach.)*
 
 ## Parent → child by POINTER, never copy
 
