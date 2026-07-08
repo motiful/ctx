@@ -31,10 +31,11 @@ on any decided work-state change (active leaf moved · next settled · user lock
 # EP3 — Open a subtree (a node passes ~150 lines)
 open_child(); parent = one-line summary + link; never duplicate child content into parent
 
-# EP4 — Generate a handoff (end of session)
-prompt = from_active_node(reading + goal + scope + concrete next step + read→confirm→begin gate)
+# EP4 — Pre-reset checkpoint (before /compact, a context reset, or dispatching an independent session)
+sink_decided_state()                      # anything decided this session → progress/ (+ spec/decisions if product truth)
+verify(active_leaf_current ∧ next_step_written ∧ nothing_decided_only_in_chat)   # progress IS the handoff; no separate prompt artifact
 
-# EP5 — Incoming session
+# EP5 — Incoming session (resume)
 read(CLAUDE.md → progress root → active node → its linked spec/decisions); summarize; WAIT for confirmation before work
 
 # EP6 — Audit for drift
@@ -98,11 +99,13 @@ Current position: webhook signature validation (2/4 e2e tests passing). Next: St
 
 **[LOAD-BEARING — hard constraint, see § Hard constraints below]** Progress **references** spec and decisions by pointer; it **never restates a product fact**. "Where we are on the auth flow" belongs in progress; "the auth flow requires PKCE" belongs in `spec/`, and progress links to it. Restating the spec fact in progress creates a second copy that goes stale — the exact rot ctx exists to prevent.
 
-## Session handoff
+## Session continuity — progress IS the handoff
 
-**Outgoing** — generate a handoff prompt *from the active node* (no chat history; the tree carries the state). Save it into the tree as a numbered child (`NN-session-prompt-<slug>.md`). The prompt names: required reading (3–7 files: active node + its links + the progress root README + project CLAUDE.md), the goal, scope IN/OUT, a concrete next step, and a **first-step gate: read → confirm understanding → then begin**. If a field can't be filled from the tree, the tree is incomplete — fix the file, don't paper over it in the prompt.
+There is **no separate handoff artifact**. A well-maintained `progress/` already carries everything a fresh session needs, so continuity is just two moments — a pre-reset checkpoint out, and a guided read in.
 
-**Incoming** — read in this order, then stop and confirm:
+**Pre-reset checkpoint (outgoing)** — before a `/compact`, a context reset, or dispatching an independent session, run one gate: **sink any state decided this session** into `progress/` (and settled product truth into `spec/`/`decisions/`), then **verify progress reflects the current position** — active leaf current, next step written, nothing decided sitting only in chat. That is all "handoff" is now: because state hits disk continuously (sink same-turn below), progress is always current, so a reset is safe at any moment. Do **not** generate a standalone handoff-prompt file — if a fact isn't in progress, fix progress, don't paper over it in a prompt. *(The compaction mechanism itself — how a tool summarizes history — is the tool's concern, not this skill's; ctx owns only that the state is externalized. Optional Claude-Code convenience: a `/ctx-compact` command can trigger this checkpoint before you run `/compact` — the checkpoint is tool-agnostic, the command is just a shortcut.)*
+
+**Incoming (resume)** — read in this order, then stop and confirm:
 
 ```
 1. CLAUDE.md (+ CLAUDE.local.md if present)   → project instructions
