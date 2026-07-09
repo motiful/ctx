@@ -73,6 +73,8 @@ Then, in your project, just tell your agent what you want in plain language. ctx
 | **"write me a report to decide from"** | produces a disposable HTML report that ends by asking for your verdict, then distills the keepers into the truth *(ctx-report)* |
 | **"our docs have drifted — reconcile them"** | finds redundant / contradictory / stale docs and converges them to one source *(ctx-merge)* |
 | **"this code change alters behavior — sync the docs"** | updates the owning spec/ADR in the same change; drift is treated as a defect — the cross-cutting rules every ctx skill applies before committing |
+| **"keep the dev server running across my sessions"** | hosts it detached in tmux so parallel sessions share one instance and it survives a reset; records the topology in a committed `services.md` *(ctx-serve)* |
+| **"I'm about to /compact — checkpoint first"** | sweeps everything decided this session into progress + decisions + spec, verifies the indexes, confirms nothing is left only in chat *(ctx-compact)* |
 
 **Ready to actually use it? → [docs/GUIDE.md](docs/GUIDE.md)** — the 5-minute tutorial, the how-do-I recipes, and why it's shaped this way.
 
@@ -87,7 +89,7 @@ This is **convergence** (messy exploration → one truth), not a wiki (a diverge
 
 ## The skills
 
-One primary you talk to (`ctx`), five companions it routes to.
+One primary you talk to (`ctx`), seven companions it routes to — five document skills, plus one operational (`ctx-serve`) and one meta (`ctx-compact`).
 
 | Skill | The job it does |
 |---|---|
@@ -97,6 +99,8 @@ One primary you talk to (`ctx`), five companions it routes to.
 | **ctx-spec** | Write specs + ADRs an agent can actually build from (granularity, EARS acceptance criteria, ADR lifecycle). |
 | **ctx-progress** | Track work truth: where we are, what's next, what to read first; cross-session handoff. |
 | **ctx-report** | Write a disposable HTML report a human decides from, then distill it into the truth. |
+| **ctx-serve** | Host long-running processes (dev servers, watchers) in tmux so they survive a reset and are shared across parallel sessions; record the topology in a committed `services.md`. |
+| **ctx-compact** | The pre-reset checkpoint: before `/compact`, sweep everything decided into its SOT home and verify the base is current — so a reset loses nothing. |
 
 The **cross-cutting hard constraints** — single-source · same-change (incl. code↔doc) · verify-against-canonical · the gate — are not a separate skill; they live in a shared reference (`consistency.md`) every skill applies before it commits.
 

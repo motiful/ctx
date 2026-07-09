@@ -62,6 +62,12 @@ When a change alters observable behavior, its spec/ADR updates in the *same* cha
 **…know when the ctx folder is "done" being set up?**
 Run the folder Definition-of-Done checklist — it's Rule 4 (the gate) in the cross-cutting rules, alongside the other standing gates: skeleton exists, each folder has an index, SOT is seeded, no orphan docs, boundary + confidentiality decided. It's both a stop-condition and a standard. (`ctx-adopt`, applying the shared `consistency.md`)
 
+**…keep a dev server running across sessions — or share one across parallel sessions?**
+Host it detached in tmux: one instance survives a `/compact`, and every parallel session on the repo shares it instead of each starting its own. The topology (what runs, where, how to restart) lives in a committed `services.md`; whether it's up *right now* is detected on demand, never stored in a file that could go stale. (`ctx-serve`)
+
+**…make sure a /compact doesn't lose what I decided?**
+Before you reset, run the checkpoint: it sweeps everything decided this session into its home — progress, decisions, spec — verifies the folder indexes are in sync, and confirms nothing is left only in chat. Say "I'm about to compact" or run `/ctx-compact`. (`ctx-compact`)
+
 ---
 
 ## Why it's shaped this way

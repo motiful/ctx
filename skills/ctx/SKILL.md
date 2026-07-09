@@ -1,10 +1,10 @@
 ---
 name: ctx
-description: Sets up and orchestrates a ctx knowledge base — a lean, living single source of truth for multi-session AI-agent work — and classifies any doc or finding by its lifetime, routing the work to the right companion skill. Use when starting or scaffolding ctx on a new project, when unsure where a finding belongs (spec vs decision vs progress vs scratch), when unsure which ctx skill handles a task, or when docs have sprawled into redundant, contradictory piles that need converging. Entry point for the collection; routes to ctx-adopt (existing repos), ctx-merge (converge sources), ctx-spec (specs and ADRs), ctx-progress (work tracking), ctx-report (reports for a human). For an existing/brownfield repo, use ctx-adopt instead.
+description: Sets up and orchestrates a ctx knowledge base — a lean, living single source of truth for multi-session AI-agent work — and classifies any doc or finding by its lifetime, routing the work to the right companion skill. Use when starting or scaffolding ctx on a new project, when unsure where a finding belongs (spec vs decision vs progress vs scratch), when unsure which ctx skill handles a task, or when docs have sprawled into redundant, contradictory piles that need converging. Entry point for the collection; routes to ctx-adopt (existing repos), ctx-merge (converge sources), ctx-spec (specs and ADRs), ctx-progress (work tracking), ctx-report (reports for a human), ctx-serve (host processes across sessions), ctx-compact (pre-reset checkpoint). For an existing/brownfield repo, use ctx-adopt instead.
 license: MIT
 metadata:
   author: motiful
-  version: "2.2"
+  version: "2.3"
 ---
 
 # ctx — a living, spec-centered single source of truth
@@ -19,7 +19,7 @@ Three lifetime classes. The archive rule and the edit rule both follow the class
 
 | Class | What | Iron law | Who belongs |
 |---|---|---|---|
-| **LIVING** | current truth | edited in place; always current; never carries a stale/deprecated section inline | `spec/` (product truth, incl. `spec/design/`) + `overview.md` + `progress/` (work truth) |
+| **LIVING** | current truth | edited in place; always current; never carries a stale/deprecated section inline | `spec/` (product truth, incl. `spec/design/`) + `overview.md` + `progress/` (work truth) + `services.md` (infra topology, when present — see ctx-serve) |
 | **APPEND-ONLY** | history | never edit or delete an accepted entry; supersede in place | `decisions/` (why; ADRs) |
 | **DISPOSABLE** | raw / process | non-authoritative; sink the confirmed, archive-aside the rest | `scratch/` (ALL raw: notes, prompts, research dumps, comparisons) + `reports/` (HTML a human reads for review) |
 
@@ -93,6 +93,11 @@ Each `read()` and `Skill()` above is a decision-layer entry — enter the module
 - **Writing an HTML report for the human to review, distilling their comments, or merging a pile of reports** → **ctx-report** (report format, keep/drop/unsure distillation, rolling-merge, archive-aside).
 - **Bringing an existing (brownfield) repo under ctx — where `/ctx` mounts, in-repo vs external symlink, onboarding a messy tree** → **ctx-adopt** (minimal-disruption onboarding; routes the actual doc-writing to the domain skills).
 
+The two companions below are not document skills — one is **operational**, one is **meta** (it orchestrates the others):
+
+- **Hosting a dev server / watcher / build daemon that must survive a reset or be shared across parallel sessions** → **ctx-serve** (tmux-hosted processes, a committed `services.md` topology manifest, live status detected-not-stored).
+- **Preparing to `/compact` or reset the session — sweeping everything decided into its SOT home first** → **ctx-compact** (a thin cross-SOT checkpoint over ctx-progress + decisions/spec + the folder indexes; introduces no new rule).
+
 The cross-cutting hard constraints — single-source · same-change (incl. code↔doc) · verify-against-canonical · the gate — are **not a companion you route to**; they live in **[`references/consistency.md`](references/consistency.md)**, which every skill (and STEP 0/6 above) loads before it commits.
 
 ---
@@ -132,6 +137,7 @@ ctx/                       # knowledge root — the single SOT for product + wor
 ├─ progress/               # LIVING · work truth: current focus + next + "read first"
 │                          #   (single file progress.md when small; a tree when it grows — see ctx-progress)
 ├─ overview.md             # LIVING · product truth, system level (C4 Context + Container)
+├─ services.md             # LIVING · infra topology: long-running processes this project hosts (optional; see ctx-serve)
 ├─ spec/                   # LIVING · product truth (see ctx-spec)
 │  ├─ <subsystem>.md       #   one clean current-truth doc per subsystem
 │  ├─ design/              #   design is a spec SUBTYPE; its .html/.json ARE the SOT (ctx-spec → design-system.md)
