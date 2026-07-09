@@ -4,7 +4,7 @@ description: Tracks the WORK truth of a project — where we are, what's next, a
 license: MIT
 metadata:
   author: motiful
-  version: "1.0"
+  version: "1.1"
 ---
 
 # ctx-progress — the LIVING work-truth doc
@@ -39,7 +39,7 @@ verify(active_leaf_current ∧ next_step_written ∧ nothing_decided_only_in_cha
 read(CLAUDE.md → progress root → active node → its linked spec/decisions); summarize; WAIT for confirmation before work
 
 # EP6 — Audit for drift
-assert one_active_leaf ∧ frontmatter_valid ∧ pointers_not_restated ∧ thresholds_respected → fix before handoff
+assert one_active_leaf_per_live_subtree ∧ frontmatter_valid ∧ pointers_not_restated ∧ thresholds_respected → fix before handoff
 
 # Before committing — apply the cross-cutting constraints
 apply("../ctx/references/consistency.md")   # single-source · same-change · verify-canonical · gate + conventions
@@ -80,9 +80,11 @@ status: draft | active | stale | archived
 
 Optional when useful: `parent: ../README.md`, `owner`, `supersedes`. Status is one-way in practice: `draft → active → stale → archived`.
 
-## Exactly one active leaf
+## Exactly one active leaf — per live session
 
-**[LOAD-BEARING — hard constraint, see § Hard constraints below]** A well-formed progress tree (or flat file) has **exactly one `active` leaf** — the current position. More than one means status propagation failed; repair it before handing off. This is what lets a fresh session find "where we are" in one hop.
+**[LOAD-BEARING — hard constraint, see § Hard constraints below]** A well-formed progress tree (or flat file) has **exactly one `active` leaf per live session** — the current position that session resumes from. In the ordinary single-session case that is one active leaf for the whole tree.
+
+When work legitimately runs **in parallel across sessions** — each session on its own child subtree (opened per the "subtask complex enough to spawn its own session" rule below) — the tree holds **one active leaf per live-session subtree, so several at once is normal**, not a propagation failure. The invariant is *within a subtree*: each live-session subtree has exactly one active leaf, and the root surfaces them side by side through the existing parent-pointer mechanism. Two active leaves **inside the same subtree** still mean propagation failed — repair before handing off. This is what lets any given session find *its* "where we are" in one hop.
 
 ## Parent → child by POINTER, never copy
 

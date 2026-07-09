@@ -4,7 +4,7 @@ description: Produces a disposable HTML report laid out for a human to read, com
 license: MIT
 metadata:
   author: motiful
-  version: "1.1"
+  version: "1.2"
 ---
 
 # ctx-report — write a report a human decides from, then dispose of it
@@ -25,6 +25,7 @@ produce_or_distill_report(task) → decision-ready HTML, then disposed of
 
 # STEP 1 — Write (when thinking must be surfaced for a human to review/decide)
 if surfacing thinking for a human:
+    ground_first(task)                   # research-first: read/verify what the claims rest on BEFORE drafting — a report is the decision layer; never write from memory
     write_html_report(task)              # plain language · terms defined inline · what+how first, why later · structurally self-verified
     end_with_verdict_list(task)          # "for you to decide" + options, gated by confidence × blast-radius
     use_absolute_paths(anything the reader opens)
@@ -51,6 +52,8 @@ apply("../ctx/references/consistency.md")   # single-source (index sync) · same
 Each `Skill()` above is a decision-layer entry — enter the module when the step runs.
 
 ## How to write a report (default format)
+
+> **Ground it before you draft it (research-first).** A report is the **decision layer** — its conclusions distill into the SOT, so an ungrounded claim propagates a wrong decision downstream. Do the reading/verification the claims rest on *first*; never write a report from memory or assumption. (Raw research lives in `scratch/` and *surfaces* as a report only once it's grounded — per *What a report is* above.)
 
 Default output is **HTML** (unless the task asks for video / markdown). Every report:
 
