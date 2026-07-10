@@ -1,5 +1,5 @@
 # progress/ — LIVING
 
-where we are, what's next, what to read first. One `progress.md` until ~150 lines, then a tree. Via ctx-progress.
+Where the project is, what's next, and what to read first. One `progress.md` until it grows past ~150 lines, then it splits into a tree.
 
-<!-- PLACEHOLDER: the agent replaces this with the project's real progress index/content on adopt. -->
+_Part of a **ctx** knowledge base — plain Markdown you can read or edit by hand. The folder shape is the standard; the content is filled per project. Conventions & the skills that maintain it: [github.com/motiful/ctx](https://github.com/motiful/ctx)._

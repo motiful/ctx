@@ -4,7 +4,7 @@ description: Produces a disposable HTML report laid out for a human to read, com
 license: MIT
 metadata:
   author: motiful
-  version: "1.2"
+  version: "1.3"
 ---
 
 # ctx-report — write a report a human decides from, then dispose of it
@@ -37,13 +37,15 @@ for comment in human_comments:
     if bucket == drop:   record_reject(reason)            # reject-log home = decisions/ (see ctx-merge)
     if bucket == unsure: carry_to_next_report(comment)    # into the next "to decide" list
 
-# STEP 3 — Rolling-merge (stop the pile becoming a new mess)
-if count(unmerged_reports) >= ~5 or cluster_ready:
-    offer_merge()                        # ASK first; a summary S<lo>-<hi>.html becomes the new baseline
-    keep_index_in_sync("reports/README") # consistency.md Rule 1
+# STEP 3 — Archive-aside (state-driven: a report is SPENT once reviewed + distilled)
+if human_reviewed(report) and keep_worthy_distilled_to_SOT(report):   # its job is done — the facts now live in spec/decisions
+    move_unit_verbatim("reports/archive/")   # non-SOT; numbers unchanged, never reused
+    collapse_index_row("reports/README")     # index lists LIVE reports only; archived → one pointer line (consistency.md Rule 1)
 
-# STEP 4 — Archive-aside (on completion)
-move_unit_verbatim("reports/archive/")   # non-SOT; numbers unchanged, never reused
+# STEP 4 — Batch sweep (ONLY a historical backlog piled up un-archived, or a phase closing)
+if a cluster of already-reviewed reports accumulated or a phase closed:
+    offer_batch_archive()                # ASK first; sweep the spent cluster into archive/ in one move
+    if the pile is worth one synthesis: offer_merge("S<lo>-<hi>.html")   # optional summary baseline
 
 # Before committing — apply the cross-cutting constraints
 apply("../ctx/references/consistency.md")   # single-source (index sync) · same-change · verify-canonical · gate
@@ -55,7 +57,7 @@ Each `Skill()` above is a decision-layer entry — enter the module when the ste
 
 > **Ground it before you draft it (research-first).** A report is the **decision layer** — its conclusions distill into the SOT, so an ungrounded claim propagates a wrong decision downstream. Do the reading/verification the claims rest on *first*; never write a report from memory or assumption. (Raw research lives in `scratch/` and *surfaces* as a report only once it's grounded — per *What a report is* above.)
 
-Default output is **HTML** (unless the task asks for video / markdown). Every report:
+Default output is **HTML**, and this holds **wherever the user says "report" — ctx project or not.** "Report" names a *format*, not a folder: even a one-off in a repo with no `ctx/` store gets the full HTML treatment below, because the reader still deserves a decision-grade, human-readable artifact (a bare `.md` dump is the failure mode this skill exists to prevent). Drop to another format only when the task *explicitly* asks ("give me markdown / a video"). What is ctx-project-scoped is only the `reports/` **folder lifecycle** (index · state-driven archive) — outside a ctx store a report is just a standalone HTML file with no folder apparatus, still written to this standard. Every report:
 
 1. **Plain language.** Write for a smart non-specialist; don't stack jargon.
 2. **Anchor each answer to its question.** A conclusion is only verifiable against the question it answers — a reader who lost the question can't judge whether the answer is right. Make the driving question explicit, at a granularity that fits the report's shape: a **response-to-asks** report (a review reply, a decision request) quotes each section's originating question **verbatim** from the asker at the section head; a **single-topic** narrative / audit states the driving question + trigger in the top framing. Not every report is one-question-per-section. (Mirrors rule 6: open anchored to the question you answer, close anchored to the question you still ask.)
@@ -75,17 +77,19 @@ When the human comments, split it into three:
 | **drop** (rejected) | mark removed + one-line reason; do not sink. Record in the reject log (its home is `decisions/` — see **ctx-merge**) so it can't quietly return under a new name. |
 | **unsure** | carry as an open question into the next report's "to decide" list; keep researching. |
 
-## Rolling-merge (stop the pile becoming a new mess)
+## Archiving — state-driven (a report is spent once reviewed + distilled)
 
-- **Iterate on the latest.** Improve the highest-numbered report rather than spawning a fresh one each time.
-- **Proactively offer to merge** when un-merged reports reach **~5** (or a cluster is ready to close). Ask before summarizing.
-- **Summary = the new baseline.** Merge a range into one `S<lo>-<hi>.html` (e.g. `S47-53.html`); it becomes the base for further questions. Then move the merged sources into `reports/archive/` (numbers unchanged, never reused).
-- **Keep a status view** ("what's sunk / open / where the latest is") in `ctx/README.md` (or `reports/README.md`) — it drives progress control.
+The distillation step already records the keep-worthy facts into the SOT as you review (keep → sink; drop → reject-log). So **a report's job is done the moment it has been reviewed by the human and its keep-worthy conclusions distilled** — from then on it is a superseded rationale trail, not a live surface. Archive it then; don't wait for a count.
 
-## Index & archive
+- **Archive per-report, on "spent".** Reviewed + distilled → move the unit into `reports/archive/` and collapse its index row to a pointer. The index lists only **live** reports (awaiting review, or an open decision surface) — that keeps the index (which carries the token cost) lean.
+- **Iterate on the latest while a thread is open.** Improve the highest-numbered live report rather than spawning a fresh one each round; a report stays live only while its questions are unresolved.
+- **Batch sweep is for backlog, not the normal path.** If reports piled up un-archived, or a whole phase closes, sweep the spent cluster into `reports/archive/` in one move (ask first). Optionally merge a range into one `S<lo>-<hi>.html` baseline first — only if that pile is worth a single synthesis.
+- **Never delete; numbers never reused.** Archived reports stay verbatim in `archive/` for provenance.
 
-- `reports/` is non-SOT, so its "what exists / what status" lives in a README index, kept in sync on every add/remove (**consistency.md** Rule 1 gate).
-- A report may be a file or a folder (per conventions); branches get subfolders. On completion, archive-aside: move the whole unit verbatim into `reports/archive/`.
+## Index
+
+- `reports/` is non-SOT, so its "what exists / what status" lives in a README index, kept in sync on every add/remove/archive (**consistency.md** Rule 1 gate). Rows are **lean** — filename · date · short status + one line; the reasoning lives in the report itself / in `decisions/`, not in the index.
+- A report may be a file or a folder (per conventions); branches get subfolders.
 
 ## The three lifetime classes
 

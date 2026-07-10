@@ -1,5 +1,5 @@
 # scratch/ — DISPOSABLE
 
-raw notes / research / experiments. No format contract. Archived aside, never a scan entry.
+Raw notes, research, and experiments. No format contract. Archived aside when done; never a place to look to understand the project.
 
-<!-- PLACEHOLDER: the agent replaces this with the project's real scratch index/content on adopt. -->
+_Part of a **ctx** knowledge base — plain Markdown you can read or edit by hand. The folder shape is the standard; the content is filled per project. Conventions & the skills that maintain it: [github.com/motiful/ctx](https://github.com/motiful/ctx)._
