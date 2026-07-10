@@ -93,7 +93,7 @@ Each `read()` and `Skill()` above is a decision-layer entry — enter the module
 - **Writing an HTML report for the human to review, distilling their comments, or merging a pile of reports** → **ctx-report** (report format, keep/drop/unsure distillation, rolling-merge, archive-aside).
 - **Bringing an existing (brownfield) repo under ctx — where `/ctx` mounts, in-repo vs external symlink, onboarding a messy tree** → **ctx-adopt** (minimal-disruption onboarding; routes the actual doc-writing to the domain skills).
 
-The two companions below are not document skills — one is **operational**, one is **meta** (it orchestrates the others):
+The two companions below are not document skills — one is **operational**, one is **meta** (a cross-SOT checkpoint over progress + spec/decisions):
 
 - **Hosting a dev server / watcher / build daemon that must survive a reset or be shared across parallel sessions** → **ctx-serve** (tmux-hosted processes, a committed `services.md` topology manifest, live status detected-not-stored).
 - **Preparing to `/compact` or reset the session — sweeping everything decided into its SOT home first** → **ctx-compact** (a thin cross-SOT checkpoint over ctx-progress + decisions/spec + the folder indexes; introduces no new rule).
@@ -140,7 +140,7 @@ ctx/                       # knowledge root — the single SOT for product + wor
 ├─ services.md             # LIVING · infra topology: long-running processes this project hosts (optional; see ctx-serve)
 ├─ spec/                   # LIVING · product truth (see ctx-spec)
 │  ├─ <subsystem>.md       #   one clean current-truth doc per subsystem
-│  ├─ design/              #   design is a spec SUBTYPE; its .html/.json ARE the SOT (ctx-spec → design-system.md)
+│  ├─ design/              #   design is a spec SUBTYPE; token .json = diffable contract, .html = reference-grade intent (ctx-spec → design-system.md)
 │  └─ archive/             #   whole old specs on a foundational rewrite (versioned name)
 ├─ decisions/NNNN-*.md     # APPEND-ONLY · why (ADR; see ctx-spec). Superseded → status flip in place, never deleted
 ├─ reports/                # DISPOSABLE · HTML a human reads for review (NON-SOT; see the ctx-report skill)

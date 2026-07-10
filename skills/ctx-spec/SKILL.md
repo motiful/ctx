@@ -4,7 +4,7 @@ description: Writes specs, ADRs, architecture and design docs that an AI coding 
 license: MIT
 metadata:
   author: motiful
-  version: "1.4"
+  version: "1.5"
 ---
 
 # ctx-spec — Write Docs an Agent Can Build From
@@ -49,7 +49,7 @@ if kind == "decision":
     update("decisions/README.md")           # index row: number · title · status · date
 
 if kind == "design":
-    read("references/design-system.md")     # DTCG tokens · Foundations/Components/Patterns/Pages · motion · Impeccable
+    read("references/design-system.md")     # flat-first structure · layer taxonomy · DTCG tokens · motion · content boundary · tool-free standard
 
 if kind == "architecture":
     place_hld()                             # C4 L1+L2 → overview.md ; L3 → per-subsystem Tier B ; L4 → agent generates
@@ -228,7 +228,7 @@ The chain (0003 ⇄ 0007) reads in place — no deletion, no archive; the index 
 
 ## spec/design/ — design is a spec subtype
 
-Design (layout / color / type / motion) can't be expressed precisely in Markdown, so `spec/design/`'s `.html` and `.json` files ARE the SOT (not attachments to a `.md`). Full structure, taxonomy (Foundations / Components / Patterns / Pages), the DTCG token model, motion (global tokens + local choreography), and the Impeccable hookup are in **`references/design-system.md`**. Read it before writing any design doc.
+Design (layout / color / type / motion) can't be expressed precisely in Markdown, so under `spec/design/` the `.json` (tokens) and `.html` (comps) files carry the truth directly — but the two differ: token JSON is the **diffable contract** (the true SOT), an `.html` comp is **reference-grade intent** (not pixel-truth). The structure (flat, graduating to subfolders when it grows), the layer taxonomy, the DTCG token model, motion (global tokens + local choreography), the tool-free design standard, and the content boundary are in **`references/design-system.md`**. Read it before writing any design doc.
 
 ## Archive rule (spec vs decision — they differ)
 

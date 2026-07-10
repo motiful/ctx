@@ -10,6 +10,3 @@ Thumbs.db
 # Node / tooling
 node_modules/
 *.log
-
-# Impeccable hook cache
-.impeccable/
