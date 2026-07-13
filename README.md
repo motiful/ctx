@@ -113,6 +113,13 @@ npx skills add motiful/ctx --all          # whole collection
 npx skills add motiful/ctx --skill ctx    # or just the primary + add companions as needed
 ```
 
+## Feedback & contributing
+
+ctx is young and still evolving — real usage on real projects is the signal that shapes it. If a skill misfires, a doc confuses, or a capability you need isn't there:
+
+- **Open an issue** → [github.com/motiful/ctx/issues](https://github.com/motiful/ctx/issues) — bug reports, rough edges, and "this didn't do what I expected" are all welcome.
+- **PRs** — docs fixes and skill refinements are welcome directly. For larger changes, open an issue first so we can align on direction.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
