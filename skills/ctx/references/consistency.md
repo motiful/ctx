@@ -89,7 +89,7 @@ A ctx folder is *done* — set up correctly, not just non-empty — when ALL hol
 - [ ] **SOT seeded:** `spec/` holds current truth (not empty stubs); `decisions/` holds ≥ the seed ADRs (the foundational choices already made).
 - [ ] **Indexes in sync:** `reports/README` (and every non-SOT index) lists exactly what exists (Rule 1).
 - [ ] **No orphan docs:** every doc is classified by lifetime — nothing sitting unclassified at the root.
-- [ ] **Boundary decided:** in-repo `/ctx` vs external symlink chosen (see **ctx-adopt**), AND the confidentiality `.gitignore` is in place (a symlink-out or gitignored dir is verified never committed when the code repo is public).
+- [ ] **Boundary decided:** in-repo `/ctx` vs configured central-root symlink vs external sibling symlink chosen (see **ctx-adopt**), AND the confidentiality `.gitignore` is in place (a symlink-out or gitignored dir is verified never committed when the code repo is public).
 
 ---
 

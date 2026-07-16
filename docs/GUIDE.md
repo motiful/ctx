@@ -20,7 +20,7 @@ You've decided to use ctx. This is how. Three parts, by what you need right now:
 
 1. **Install.** `npx skills add motiful/ctx --all`
 2. **Adopt.** In your repo, tell your agent: **"apply ctx to this repo."**
-   The agent (via `ctx-adopt`) inspects the repo, proposes where `/ctx` lives (an in-repo folder by default), and shows you a **migration plan** — a table of the scattered docs it found and where each would go. Nothing moves yet.
+   On first use, ctx asks whether you have a central folder where project ctx stores should live. If you provide one, future projects use it as the backend pool; if you skip it, ctx uses the default backend rules. The agent (via `ctx-adopt`) inspects the repo, proposes where `/ctx` lives (central-root symlink when configured, otherwise an in-repo folder by default), and shows you a **migration plan** — a table of the scattered docs it found and where each would go. Nothing moves yet.
 3. **Approve.** Say yes. Now you have:
    ```
    your-repo/
@@ -54,7 +54,7 @@ Keep one `progress/` that says where we are + what's next + what to read first. 
 Ask for a report. You get a numbered, disposable HTML doc that lays out options and ends by asking for a verdict. After you comment, its keep-worthy conclusions are distilled into the SOT and the report is archived. (`ctx-report`)
 
 **…keep ctx out of my open-source repo?**
-When `ctx-adopt` detects a published repo, it makes `/ctx` a **gitignored symlink** to an external `../<project>-ctx/`. Your code ships clean; the agent still reads `/ctx`; your secrets never leave. (`ctx-adopt`)
+When a central root is configured, `ctx-adopt` makes `/ctx` a symlink to `<central-root>/<project>-ctx/`. Without one, when it detects a published repo, it makes `/ctx` a **gitignored symlink** to an external `../<project>-ctx/`. Your code ships clean; the agent still reads `/ctx`; your secrets never leave. (`ctx-adopt`)
 
 **…stop code and docs from drifting apart?**
 When a change alters observable behavior, its spec/ADR updates in the *same* change — not "later." Before marking a task done, sweep the SOT for the changed behavior. (This is Rule 2 — same change, no drift — one of the cross-cutting rules every ctx skill applies before committing.)

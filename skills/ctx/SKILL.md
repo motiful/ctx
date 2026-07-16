@@ -4,7 +4,7 @@ description: Sets up and orchestrates a ctx knowledge base — a lean, living si
 license: MIT
 metadata:
   author: motiful
-  version: "2.3"
+  version: "2.4"
 ---
 
 # ctx — a living, spec-centered single source of truth
@@ -41,6 +41,37 @@ Order does not matter. Whatever you produce, classify it:
 4. **Raw / uncertain: notes, prompts, research dumps, comparisons** → `scratch/`, non-authoritative.
 5. **Thinking laid out for a human to review** → `reports/` (disposable HTML; see the **ctx-report** skill).
 
+## First-run storage preference
+
+Before the first ctx setup/adoption on a machine, decide whether this user wants a central backend pool for ctx knowledge roots.
+
+Preference file: `$XDG_CONFIG_HOME/ctx/config.json` when `XDG_CONFIG_HOME` is set; otherwise `~/.config/ctx/config.json`.
+
+First-run protocol:
+
+1. If the preference file exists, read it and apply it.
+2. If it does not exist, ask the user once: `Do you have a central folder where ctx should store project knowledge bases? If yes, provide an absolute path; otherwise say none.`
+3. If the user provides an absolute path, create that directory if needed and save it as `central_root`.
+4. If the user says none, skips, or does not specify a path, save `central_root: null` and use the default backend rules. Do not re-ask on every project; ask again only when the user asks to change the preference.
+
+Config shape:
+
+```json
+{
+  "version": 1,
+  "central_root": null,
+  "created_by": "ctx"
+}
+```
+
+A configured `central_root` is a backend pool, not itself a project knowledge root. For each project, create one project-specific knowledge root under it:
+
+```
+<central_root>/<project-slug>-ctx/
+```
+
+`<project-slug>` is the project directory name lowercased, with unsafe filename characters replaced by `-`. If that name collides with an existing ctx root for a different absolute project path, append a short stable hash of the absolute project path. The project still gets the stable mount point `<project>/ctx`, normally as a gitignored symlink to the project-specific root. The target folder is the knowledge root directly — its children are `spec/ decisions/ progress/ reports/ scratch/`; do not create a nested `ctx/` inside it.
+
 ## Execution Procedure
 
 ```
@@ -48,6 +79,7 @@ build_or_maintain_kb(project_or_pile) → living_kb
 
 # STEP 0 — Load the cross-cutting constraints (four rules + format conventions)
 read("references/consistency.md")        # single-source · same-change · verify-canonical · gate + numbering/archive-by-class
+resolve first-run storage preference      # ask once if missing; central_root wins over per-project defaults
 ensure ctx/ skeleton exists — scaffold from assets/ctx-skeleton/ (progress/ · spec/ · decisions/ · reports/ · scratch/ · README.md)
 
 # STEP 1 — Classify by LIFETIME, not stage (write from any direction; NOT a waterfall)
@@ -130,7 +162,7 @@ The split above is a **status** distinction: a **spec** states conclusions and c
 
 ## The canonical folder
 
-The knowledge root is `ctx/` — a single folder at the project root. This is the stable **mount point**; its backend is an in-repo directory by default, or a gitignored symlink to an external store when the context must not ship (see **ctx-adopt**).
+The knowledge root is `ctx/` — a single folder at the project root. This is the stable **mount point**; its backend is a configured central-root symlink when the user has chosen one, otherwise an in-repo directory by default, or a gitignored symlink to an external store when the context must not ship (see **ctx-adopt**).
 
 ```
 ctx/                       # knowledge root — the single SOT for product + work truth
@@ -158,7 +190,7 @@ The skeleton above is the *model* — what a correct ctx folder looks like. Whet
 
 ## The external store — how a shippable artifact records its own making
 
-When the deliverable is a **shippable artifact** (a skill, an app, a video) whose docs must NOT ship with it, keep the docs in a sibling **`<name>-ctx/`** (external, never shipped), managed by *this* methodology. **That `<name>-ctx/` folder itself IS the knowledge root** — it plays the role of `ctx/`, so its children are `spec/ decisions/ progress/ reports/ scratch/` **directly** (no nested `ctx/`). The published artifact = the output; the external store = *why it is the way it is* (its spec + its ADRs). This is where a design decision like "we **supersede** old ADRs in place (never archive them), because a superseded decision is live knowledge" is recorded — so the reasoning is never lost. **This collection dogfoods it exactly: this skill ships as `ctx/`, its own making lives in the sibling `ctx-ctx/`.**
+When the deliverable is a **shippable artifact** (a skill, an app, a video) whose docs must NOT ship with it, keep the docs external, managed by *this* methodology. If a central root is configured, use `<central_root>/<name>-ctx/`; otherwise default to a sibling **`<name>-ctx/`**. **That `<name>-ctx/` folder itself IS the knowledge root** — it plays the role of `ctx/`, so its children are `spec/ decisions/ progress/ reports/ scratch/` **directly** (no nested `ctx/`). The published artifact = the output; the external store = *why it is the way it is* (its spec + its ADRs). This is where a design decision like "we **supersede** old ADRs in place (never archive them), because a superseded decision is live knowledge" is recorded — so the reasoning is never lost. **This collection dogfoods it exactly: this skill ships as `ctx/`, its own making lives in the sibling `ctx-ctx/`.**
 
 ## Cross-cutting rules & the read-side habit (pointers, not mechanics)
 

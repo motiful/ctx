@@ -1,10 +1,10 @@
 ---
 name: ctx-adopt
-description: Bring an EXISTING project (brownfield) under ctx with minimal disruption. Decides where the /ctx folder lives (in-repo directory by default, or a gitignored symlink to an external sibling store named project-name-ctx when the context must not ship with public code), which pointer file announces it (respect the project's existing AGENTS.md/CLAUDE.md; else the running agent's native one), and ROUTES the actual doc-writing to the domain skills (ctx-merge / ctx-spec / ctx-progress / ctx-report) rather than writing shallow versions itself. Use when a user says "apply ctx to this existing repo / bring this repo under ctx", when deciding whether ctx must stay separable from published code, or when onboarding a messy existing repo.
+description: Bring an EXISTING project (brownfield) under ctx with minimal disruption. Decides where the /ctx folder lives (configured central-root symlink when present; otherwise in-repo directory by default, or a gitignored symlink to an external sibling store named project-name-ctx when the context must not ship with public code), which pointer file announces it (respect the project's existing AGENTS.md/CLAUDE.md; else the running agent's native one), and ROUTES the actual doc-writing to the domain skills (ctx-merge / ctx-spec / ctx-progress / ctx-report) rather than writing shallow versions itself. Use when a user says "apply ctx to this existing repo / bring this repo under ctx", when deciding whether ctx must stay separable from published code, or when onboarding a messy existing repo.
 license: MIT
 metadata:
   author: motiful
-  version: "1.1"
+  version: "1.2"
 ---
 
 # ctx-adopt — bring an existing project under ctx, minimally
@@ -20,7 +20,7 @@ whether that is a real folder or a symlink is a deployment detail.
 ## Three rules — what "low-disruption" MEANS
 
 1. **NEVER restructure the user's existing directories.** Only ADD the `/ctx` mount + one pointer line.
-2. **Default to the lightest backend** (in-repo real dir). Upgrade only when separability is actually needed.
+2. **Honor the user's machine-level storage preference first.** If no central root is configured, default to the lightest backend (in-repo real dir). Upgrade only when separability is actually needed.
 3. **Reorganize the user's tree only when the user asks** — and even then guarantee one thing: ctx logic stays valid.
 
 ## Execution Procedure
@@ -28,7 +28,12 @@ whether that is a real folder or a symlink is a deployment detail.
 ### EP1 — pick the backend
 
 ```
-if project is published (LICENSE + public remote + package-registry footprint):
+storage = load ctx first-run storage preference     # ../ctx/SKILL.md § First-run storage preference
+
+if storage.central_root is set:
+    backend = CENTRAL EXTERNAL SYMLINK    # machine-level preference; symlink gitignored
+             <repo>/ctx  ->  <central_root>/<project-slug>-ctx/
+elif project is published (LICENSE + public remote + package-registry footprint):
     backend = EXTERNAL SYMLINK           # context must not ship with public code
              <repo>/ctx  ->  ../<project>-ctx/     (symlink gitignored; real bytes live outside the code repo)
 else:
@@ -42,8 +47,9 @@ the **suffix** form `<project>-ctx` — it reads as "the ctx of `<project>`" and
 project and its ctx adjacent in a directory listing.
 
 > The external store's exact home (a sibling dir `../<project>-ctx/`, a private repo, or a shared
-> machine store) is a deployment detail — default to the sibling dir. Do NOT invent a central
-> store unless the user has many repos AND asks for one.
+> machine store) is a deployment detail — use the configured central root when present; otherwise
+> default to the sibling dir. Do NOT invent a central store without the first-run preference or
+> an explicit user request.
 
 ### EP2 — announce it (pointer: tool-agnostic, agent-aware)
 
