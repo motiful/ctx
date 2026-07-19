@@ -53,8 +53,14 @@ Keep one `progress/` that says where we are + what's next + what to read first. 
 **…write a report to get a human decision?**
 Ask for a report. You get a numbered, disposable HTML doc that lays out options and ends by asking for a verdict. After you comment, its keep-worthy conclusions are distilled into the SOT and the report is archived. (`ctx-report`)
 
+**…give feedback on a report that gets acted on precisely?**
+Name the failure instead of describing around it — "this is argument to moderation" or "that's a false graceful degradation" gets a sharper fix than a general complaint. → [Reviewer vocabulary](report-review-vocabulary.md)
+
 **…keep ctx out of my open-source repo?**
 When `ctx-adopt` detects a published repo, it makes `/ctx` a **gitignored symlink** to an external `../<project>-ctx/`. Your code ships clean; the agent still reads `/ctx`; your secrets never leave. (`ctx-adopt`)
+
+**…keep every project's ctx in one place — a central folder, or my Obsidian vault?**
+`/ctx` is a stable **mount**; its backend is swappable, so you can point it anywhere. Tell your agent *"put this project's ctx in `<your-folder>`"* and `ctx-adopt` symlinks `/ctx → <your-folder>/<project>-ctx/`. The agent still reads `/ctx` locally; the bytes live in your central folder — ideal for an Obsidian vault, where the markdown (`spec/`, `decisions/`, `progress/`) becomes native, cross-linkable notes. To make one location your default across repos, record it in **your own agent config** (`~/.claude/CLAUDE.md`, or your user-level `AGENTS.md`) — not in ctx, which stays stateless. Prefer choosing **per repo** over auto-routing everything, so throwaway experiments don't fill the folder. (`ctx-adopt`)
 
 **…stop code and docs from drifting apart?**
 When a change alters observable behavior, its spec/ADR updates in the *same* change — not "later." Before marking a task done, sweep the SOT for the changed behavior. (This is Rule 2 — same change, no drift — one of the cross-cutting rules every ctx skill applies before committing.)

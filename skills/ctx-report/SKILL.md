@@ -4,7 +4,7 @@ description: Produces a disposable HTML report laid out for a human to read, com
 license: MIT
 metadata:
   author: motiful
-  version: "1.5"
+  version: "1.6"
 ---
 
 # ctx-report — write a report a human decides from, then dispose of it
@@ -27,7 +27,7 @@ produce_or_distill_report(task) → decision-ready HTML, then disposed of
 # Scope: the whole interaction — reading the ask, researching, deciding what to escalate — not just the HTML artifact.
 if surfacing thinking for a human:
     structure(task)                      # STRUCTURE: 梳理 MECE-exhaustive sub-issues + 发掘 laddering to the root question — see § STEP 0
-    verify_premises(task)                # date-tool + current year · resolve-hypocognition-not-mirror · value-elicitation-upfront — see § STEP 0
+    verify_premises(task)                # date-tool + current year · resolve-hypocognition BOTH directions (felt-gap→term, near-miss-phrasing→controlled-term) · value-elicitation-upfront — see § STEP 0
     work_it(task)                        # exhaust what's researchable → converge to one recommendation → escalate only the human's private call, with a recommendation attached — see § STEP 0
 
 # STEP 1 — Write (when thinking must be surfaced for a human to review/decide)
