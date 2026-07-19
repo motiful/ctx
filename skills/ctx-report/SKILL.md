@@ -4,7 +4,7 @@ description: Produces a disposable HTML report laid out for a human to read, com
 license: MIT
 metadata:
   author: motiful
-  version: "1.4"
+  version: "1.5"
 ---
 
 # ctx-report — write a report a human decides from, then dispose of it
@@ -74,6 +74,8 @@ Before naming any concept STRUCTURE surfaces, run it through a **term-operation-
 ### Resolve hypocognition, don't mirror
 
 When the human names a felt-but-wordless gap in their own improvised words, find the established term for it and use that — don't parrot their phrase back dressed up as an answer. Anti-sycophancy applies the same way to a claim: verify it, don't rubber-stamp it because the human stated it with confidence.
+
+The reverse also holds: when the human's own phrasing is close to but not quite one of this collection's controlled terms (argument-to-moderation, graceful degradation, decision-forcing, and the like — all already inline in this doc), map it to the precise term before answering. The mapping is cheap and needs no separate lookup — do it inline, the same way you'd resolve any other imprecise phrasing.
 
 ### Verify premises
 

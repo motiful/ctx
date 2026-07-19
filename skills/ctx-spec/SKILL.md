@@ -4,7 +4,7 @@ description: Writes specs, ADRs, architecture and design docs that an AI coding 
 license: MIT
 metadata:
   author: motiful
-  version: "1.5"
+  version: "1.6"
 ---
 
 # ctx-spec — Write Docs an Agent Can Build From
@@ -247,6 +247,7 @@ Follows the lifetime class (global rule in `../ctx/references/consistency.md § 
 - **MUST** write a spec as **conclusions + constraints** (normative content). **NEVER** embed teaching, tutorials, discursive narrative, or option-comparison in a spec — that is Explanation bleeding into a normative doc; move it to a `reports/` doc (for review) or an ADR (the why).
 - **MAY** carry **INTENT** inline — a one-clause *so-that* that scopes a rule so the agent generalizes correctly (`X, so that Y`); this is the one "why" that stays, because deleting it changes edge-case conformance. **MUST NOT** embed **RATIONALE** ("why we chose X over Y") → that belongs in the ADR's `Considered options` + `Decision outcome`. **MUST** cut **BACKGROUND** (context the model already knows / history that changes no action).
 - **NEVER** treat a figure, example, or note as a binding requirement — illustrative content is informative, not normative. State the normative claim as a MUST/SHALL line; do not let a diagram imply it.
+- **MUST** run a term-operation consistency check before naming a new concept in a spec: if the term's full established meaning conflicts with the requirement it's attached to, drop the term and keep only the requirement (same gate as `skill-forge/references/skill-format.md § Term Usage`, adopted from `ctx-report`'s term-landing discipline).
 
 ### Testable, versioned, machine-readable
 
