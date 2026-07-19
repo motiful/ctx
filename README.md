@@ -40,8 +40,8 @@ ctx is a small set of agent skills that keep a project's context in **one living
 
 - **Lifetime layout, not stage layout** — folders that tell you the one thing you need to act: edit in place, never rewrite, or throw away. No stale doc left at every pipeline stage.
 - **A generative source of truth** — only `spec/` + `decisions/` are truth; every report, tutorial, or comparison is derived on demand and discarded. The base stays lean by construction.
-- **Convergence, not a wiki** — messy multi-session exploration pulled *into* one truth you build from, instead of a divergent pile of articles that grows sideways.
 - **Decision-forcing, not option-dumping** — a report exhausts what's researchable, converges to one ranked recommendation, and escalates only your genuinely private call — never a menu with no pick attached.
+- **Convergence, not a wiki** — messy multi-session exploration pulled *into* one truth you build from, instead of a divergent pile of articles that grows sideways.
 - **Zero-disruption onboarding** — point it at an existing repo; it proposes a layout and a migration plan and touches nothing until you approve. Your code and directories are never restructured.
 - **Ships clean** — the context can live in an external `<project>-ctx` store (a gitignored symlink) so nothing private leaves with public code.
 - **Survives handoff** — a cross-session progress node tells the next session where you are, what's next, and what to read first.
