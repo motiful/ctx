@@ -32,6 +32,7 @@ ctx is a small set of agent skills that keep a project's context in **one living
 
 - **You lose the thread when context compacts.** → ctx keeps one buildable source of truth (`spec/` + `decisions/`) that a fresh session reads in minutes.
 - **You can't tell a decision from a stale note from a scratch file.** → ctx sorts every doc by **lifetime** — living / append-only / disposable — so what's current, what's history, and what's throwaway are never confused.
+- **Your agent asks you to pick, instead of deciding.** → `ctx-report` exhausts what it can research first, converges to one ranked recommendation, and only asks you the part that's genuinely your call — never a blank "you decide."
 - **Reports and explanations pile up into a second mess.** → In ctx they're **disposable**: written for a human to decide from, distilled into the source of truth, then archived. The truth stays lean.
 - **Your secrets can't ship with your open-source code.** → ctx's context folder can live *outside* the published repo (a gitignored symlink) while the agent still finds it at `/ctx`.
 
@@ -40,6 +41,7 @@ ctx is a small set of agent skills that keep a project's context in **one living
 - **Lifetime layout, not stage layout** — folders that tell you the one thing you need to act: edit in place, never rewrite, or throw away. No stale doc left at every pipeline stage.
 - **A generative source of truth** — only `spec/` + `decisions/` are truth; every report, tutorial, or comparison is derived on demand and discarded. The base stays lean by construction.
 - **Convergence, not a wiki** — messy multi-session exploration pulled *into* one truth you build from, instead of a divergent pile of articles that grows sideways.
+- **Decision-forcing, not option-dumping** — a report exhausts what's researchable, converges to one ranked recommendation, and escalates only your genuinely private call — never a menu with no pick attached.
 - **Zero-disruption onboarding** — point it at an existing repo; it proposes a layout and a migration plan and touches nothing until you approve. Your code and directories are never restructured.
 - **Ships clean** — the context can live in an external `<project>-ctx` store (a gitignored symlink) so nothing private leaves with public code.
 - **Survives handoff** — a cross-session progress node tells the next session where you are, what's next, and what to read first.

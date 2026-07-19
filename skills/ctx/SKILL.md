@@ -4,7 +4,7 @@ description: Sets up and orchestrates a ctx knowledge base — a lean, living si
 license: MIT
 metadata:
   author: motiful
-  version: "2.3"
+  version: "2.4"
 ---
 
 # ctx — a living, spec-centered single source of truth
@@ -61,19 +61,23 @@ for each finding / note / doc:
 
 # STEP 2 — Converge scattered sources into the KB (any consolidation of ≥2 sources)
 if consolidating notes / reports / subagent outputs:
-    Skill("ctx-merge", sources)          # disposition ledger; a drop is a recorded decision, never silent
+    merged = Skill("ctx-merge", sources)     # disposition ledger; a drop is a recorded decision, never silent
+    assert merged.delivered                  # GATE — do not proceed believing a merge happened if it didn't
 
 # STEP 3 — Write build-grade docs
 if writing / restructuring a spec, ADR, or design doc:
-    Skill("ctx-spec", target)            # formats, granularity, ADR boundary + numbering, spec/design/, the writing standard
+    spec_result = Skill("ctx-spec", target)  # formats, granularity, ADR boundary + numbering, spec/design/, the writing standard
+    assert spec_result.delivered             # GATE
 
 # STEP 4 — Track progress / hand off between sessions
 if updating work state, opening a subtree, or handing off to a new session:
-    Skill("ctx-progress", ctx/progress/) # single-file-or-tree, frontmatter, handoff, archive-when-long
+    progress_result = Skill("ctx-progress", ctx/progress/)  # single-file-or-tree, frontmatter, handoff, archive-when-long
+    assert progress_result.delivered         # GATE
 
 # STEP 5 — Producing / distilling / merging a report for human review?
 if writing or distilling an HTML report for the human:
-    Skill("ctx-report", ctx/reports/)        # report format · distillation · rolling-merge · archive
+    report_result = Skill("ctx-report", ctx/reports/)       # report format · distillation · rolling-merge · archive
+    assert report_result.delivered           # GATE
 
 # STEP 6 — Apply the cross-cutting constraints (mandatory before finishing any multi-doc edit or behavior-changing commit)
 apply("references/consistency.md")       # verify single-source · same-change (incl. code↔doc) · verify-against-canonical · the gate — fix any violation before committing

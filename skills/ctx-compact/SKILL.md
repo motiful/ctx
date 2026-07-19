@@ -4,7 +4,7 @@ description: Sweeps everything decided in the current session into its correct s
 license: MIT
 metadata:
   author: motiful
-  version: "1.0"
+  version: "1.1"
 ---
 
 # ctx-compact — the pre-reset checkpoint sweep
@@ -19,8 +19,9 @@ The risk this addresses is asymmetric and catastrophic: a `/compact` or a new se
 checkpoint_before_reset() → nothing decided is left only in chat; the base is current + consistent
 
 # STEP 1 — Sweep the TRACKING gate (progress) — the common case
-Skill("ctx-progress")                     # run its pre-reset checkpoint (EP4): sink decided work-state;
+result = Skill("ctx-progress")            # run its pre-reset checkpoint (EP4): sink decided work-state;
                                           # verify active leaf current, next step written, nothing only-in-chat
+assert result.delivered                   # GATE — do not report "safe to /compact" on an unconfirmed sink
 
 # STEP 2 — Sweep the SOT gate (decisions / spec) — what progress does NOT own
 for each thing DECIDED this session that has crossed the SOT gate (defined in ctx-progress § Sink same-turn):

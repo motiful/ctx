@@ -51,7 +51,7 @@ Tell the agent the choice + the why ("we picked X over Y because Z"). It writes 
 Keep one `progress/` that says where we are + what's next + what to read first. When it outgrows a flat file (~150 lines), it graduates to a tree. A new session reads the active node and picks up. (`ctx-progress`)
 
 **…write a report to get a human decision?**
-Ask for a report. You get a numbered, disposable HTML doc that lays out options and ends by asking for a verdict. After you comment, its keep-worthy conclusions are distilled into the SOT and the report is archived. (`ctx-report`)
+Ask for a report. You get a numbered, disposable HTML doc that converges to one ranked recommendation and asks for your verdict only on what's genuinely your call — not a wall of options for you to sort through. After you comment, its keep-worthy conclusions are distilled into the SOT and the report is archived. (`ctx-report`)
 
 **…give feedback on a report that gets acted on precisely?**
 Name the failure instead of describing around it — "this is argument to moderation" or "that's a false graceful degradation" gets a sharper fix than a general complaint. → [Reviewer vocabulary](report-review-vocabulary.md)

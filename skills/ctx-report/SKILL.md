@@ -1,10 +1,10 @@
 ---
 name: ctx-report
-description: Produces a disposable HTML report laid out for a human to read, comment on, and decide from — then distills the keep-worthy conclusions into the source of truth and archives the report. Use when writing a report, a review doc, or an options-for-a-decision document for a human to weigh in on in a ctx knowledge base, when a human has commented on a report and it needs distilling, or when un-merged reports are piling up.
+description: Produces a disposable HTML report laid out for a human to read, comment on, and decide from — then distills the keep-worthy conclusions into the source of truth and archives the report. Use when writing a report, a review doc, or an options-for-a-decision document for a human to weigh in on in a ctx knowledge base, when a human has commented on a report and it needs distilling, or when un-merged reports are piling up. Not for converging a pile of raw notes or subagent outputs straight into the source of truth — use ctx-merge for that.
 license: MIT
 metadata:
   author: motiful
-  version: "1.6"
+  version: "1.7"
 ---
 
 # ctx-report — write a report a human decides from, then dispose of it
@@ -28,7 +28,7 @@ produce_or_distill_report(task) → decision-ready HTML, then disposed of
 if surfacing thinking for a human:
     structure(task)                      # STRUCTURE: 梳理 MECE-exhaustive sub-issues + 发掘 laddering to the root question — see § STEP 0
     verify_premises(task)                # date-tool + current year · resolve-hypocognition BOTH directions (felt-gap→term, near-miss-phrasing→controlled-term) · value-elicitation-upfront — see § STEP 0
-    work_it(task)                        # exhaust what's researchable → converge to one recommendation → escalate only the human's private call, with a recommendation attached — see § STEP 0
+    decision_force(task)                 # exhaust what's researchable → converge to one recommendation → escalate only the human's private call, with a recommendation attached — see § STEP 0 Decision-forcing
 
 # STEP 1 — Write (when thinking must be surfaced for a human to review/decide)
 if surfacing thinking for a human:
@@ -40,7 +40,9 @@ if surfacing thinking for a human:
 # STEP 2 — Distill (after the human comments) — so nobody tracks what was reviewed
 for comment in human_comments:
     bucket = classify(comment)           # keep | drop | unsure
-    if bucket == keep:   Skill("ctx-merge", conclusion)   # sink to spec/decisions with provenance
+    if bucket == keep:
+        sunk = Skill("ctx-merge", conclusion)             # sink to spec/decisions with provenance
+        assert sunk.delivered                             # GATE — a silent non-sink is the exact drop this collection exists to prevent
     if bucket == drop:   record_reject(reason)            # reject-log home = decisions/ (see ctx-merge)
     if bucket == unsure: carry_to_next_report(comment)    # into the next "to decide" list
 
@@ -75,7 +77,7 @@ Before naming any concept STRUCTURE surfaces, run it through a **term-operation-
 
 When the human names a felt-but-wordless gap in their own improvised words, find the established term for it and use that — don't parrot their phrase back dressed up as an answer. Anti-sycophancy applies the same way to a claim: verify it, don't rubber-stamp it because the human stated it with confidence.
 
-The reverse also holds: when the human's own phrasing is close to but not quite one of this collection's controlled terms (argument-to-moderation, graceful degradation, decision-forcing, and the like — all already inline in this doc), map it to the precise term before answering. The mapping is cheap and needs no separate lookup — do it inline, the same way you'd resolve any other imprecise phrasing.
+The reverse also holds: when the human's own phrasing is close to but not quite one of this collection's controlled terms (argument to moderation, graceful degradation, decision-forcing, and the like — all already inline in this doc), map it to the precise term inline before answering, the same way you'd resolve any other imprecise phrasing.
 
 ### Verify premises
 
