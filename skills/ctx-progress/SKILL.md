@@ -4,7 +4,7 @@ description: Tracks the WORK truth of a project — where we are, what's next, a
 license: MIT
 metadata:
   author: motiful
-  version: "1.1"
+  version: "1.2"
 ---
 
 # ctx-progress — the LIVING work-truth doc
@@ -27,6 +27,9 @@ on any decided work-state change (active leaf moved · next settled · user lock
     write_into_progress(change)           # sink SAME-TURN; never leave decided state only in chat
     reference(spec, decisions, by="pointer")   # never restate a product fact
     # the ordered T### task list + each task's status live HERE (not in spec); every T### → a spec REQ-###
+    # row format: `T### <task title> — status: done | active | blocked → REQ-###` (one line per task;
+    # this status vocabulary is per-TASK, distinct from the frontmatter `status` field above, which
+    # describes the whole progress doc, not an individual task)
 
 # EP3 — Open a subtree (a node passes ~150 lines)
 open_child(); parent = one-line summary + link; never duplicate child content into parent
@@ -100,6 +103,8 @@ Current position: webhook signature validation (2/4 e2e tests passing). Next: St
 ## Pointer, don't restate (the SSOT guard)
 
 **[LOAD-BEARING — hard constraint, see § Hard constraints below]** Progress **references** spec and decisions by pointer; it **never restates a product fact**. "Where we are on the auth flow" belongs in progress; "the auth flow requires PKCE" belongs in `spec/`, and progress links to it. Restating the spec fact in progress creates a second copy that goes stale — the exact rot ctx exists to prevent.
+
+The same discipline extends to `ctx/services.md` when `ctx-serve` is in use: a topology change (new service, moved port) gets a one-line pointer from the active leaf, never a restated topology detail (see `ctx-serve` § serve ⟂ progress).
 
 ## Session continuity — progress IS the handoff
 

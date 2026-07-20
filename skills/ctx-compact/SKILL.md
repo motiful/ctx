@@ -4,12 +4,12 @@ description: Sweeps everything decided in the current session into its correct s
 license: MIT
 metadata:
   author: motiful
-  version: "1.1"
+  version: "1.2"
 ---
 
 # ctx-compact — the pre-reset checkpoint sweep
 
-> A user-invoked **safety ritual**, not a new mechanism. It runs the sink discipline that already lives in the companions — `ctx-progress` (tracking), `ctx-spec`/`ctx-merge` (SOT), the consistency gate — across every SOT home at once, so nothing decided this session is left only in chat when context resets. Lifetime model in [`../ctx`](../ctx/SKILL.md).
+> A user-invoked **safety ritual**, not a new mechanism. It runs the sink discipline that already lives in the companions — `ctx-progress` (tracking), `ctx-spec`/`ctx-merge` (SOT), the consistency gate — across both gates at once, so nothing decided this session is left only in chat when context resets. Lifetime model in [`../ctx`](../ctx/SKILL.md).
 
 ## Execution Procedure
 
@@ -25,14 +25,18 @@ assert result.delivered                   # GATE — do not report "safe to /com
 
 # STEP 2 — Sweep the SOT gate (decisions / spec) — what progress does NOT own
 for each thing DECIDED this session that has crossed the SOT gate (defined in ctx-progress § Sink same-turn):
-    durable product truth  → spec/            (edit in place — via ctx-spec)
-    a made choice + why     → decisions/NNNN   (append — via ctx-merge / ctx-spec)
+    if durable product truth:  result = Skill("ctx-spec", thing)                    # edit spec/ in place
+    if a made choice + why:    result = Skill("ctx-spec", thing)                    # append decisions/NNNN
+                                # (or Skill("ctx-merge", thing) when reconciling multiple sources into one)
+    assert result.delivered                  # GATE — do not report "safe to /compact" on an unconfirmed sink
 # an agent-synthesized-this-turn design the owner has NOT reviewed does NOT cross — it stays a report proposal
 # (the two gates are defined once in ctx-progress; this step RUNS them, it does not redefine them)
 
 # STEP 3 — Verify the base is current + internally consistent
-apply("../ctx/references/consistency.md") # single-source · same-change (incl. code↔doc) · index-sync
-                                          # (reports/ + decisions/ READMEs) · verify-against-canonical · the gate
+apply("../ctx/references/consistency.md") # single-source (incl. index-sync: reports/README matches what's
+                                          # on disk right now — NOT a trigger to archive; that's ctx-report's
+                                          # own state-driven rule, orthogonal to a reset) · same-change
+                                          # (incl. code↔doc) · verify-against-canonical · the gate
 
 # STEP 4 — Confirm safe to reset
 report: what was swept · what is still open (and where it is tracked) · indexes in sync → "safe to /compact"
@@ -43,6 +47,7 @@ report: what was swept · what is still open (and where it is tracked) · indexe
 - **It is** the [`ctx-progress`](../ctx-progress/SKILL.md) pre-reset checkpoint **promoted to a user-invocable, cross-SOT entry** — you say "I'm about to compact" (or run `/ctx-compact`) and it sweeps progress **and** decisions **and** spec, then verifies the indexes, in one deliberate pass.
 - **It is not** a new sink rule. Every rule it applies is defined elsewhere: the two gates and sink-same-turn in `ctx-progress`, distillation in `ctx-merge`, ADR/spec form in `ctx-spec`, index-sync and the gate in `consistency.md`. This skill **references** them; it never restates them (single-source).
 - **It is not** the tool's compaction mechanism. *How* a tool summarizes history when you run `/compact` is vendor-owned and changes; ctx-compact owns only that the durable **state is externalized first**, so the summary is a convenience, not a single point of failure.
+- **It is not** a report-archival trigger. Whether a reviewed report should move to `reports/archive/` is `ctx-report`'s own state-driven rule (its § Archiving — state-driven), unrelated to a session reset — an unarchived-but-spent report carries no reset risk, since its keep-worthy content already crossed the SOT gate in STEP 2. STEP 3 only confirms the index matches whatever is currently on disk.
 
 ## The two gates it respects
 

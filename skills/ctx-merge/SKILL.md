@@ -4,7 +4,7 @@ description: Converges many scattered sources — dated research notes, subagent
 license: MIT
 metadata:
   author: motiful
-  version: "1.2"
+  version: "1.3"
 ---
 
 # ctx-merge — Converge Without Losing or Distorting
@@ -83,7 +83,7 @@ Before/while merging, build a ledger: **every source conclusion gets an explicit
 
 Routing destinations, per the SOT model (`../ctx/SKILL.md § the model`): **keep → `spec/` (current truth) or `decisions/` (a choice + why)** — the SOT is generative, so what's kept lands in the generative core; **drop → the reject log** (with a one-line reason, so it can't quietly return under a new name); **unsure → an open question** carried to the next round. Raw source material itself is not a merge destination — it already lives in `scratch/` (the model's single home for ALL raw: notes, prompts, research dumps, comparisons). No `log` destination — "what happened" is git. The ledger is the artifact a human reviews; review **judgments**, not absences.
 
-**The reject log lives under `decisions/`** (this is its single canonical home — every other skill references it, none relocates it). A rejection is decision knowledge — "we considered X and rejected it because Y" — so it belongs in the APPEND-ONLY class, not `scratch/`: either an ADR whose status is `rejected`, or a single `decisions/rejected.md` ledger. Keeping it beside the decisions is what lets the constraint-5 reject-check (below) find it, and stops a rejected concept quietly returning under a new label.
+**The reject log lives under `decisions/`** (this is its single canonical home — every other skill references it, none relocates it). A rejection is decision knowledge — "we considered X and rejected it because Y" — so it belongs in the APPEND-ONLY class, not `scratch/`: a numbered ADR whose status is `rejected` (see `ctx-spec` § Status lifecycle), same one-per-file discipline as any other decision. Keeping it beside the decisions is what lets the constraint-5 reject-check (below) find it, and stops a rejected concept quietly returning under a new label.
 
 **Memory-defense routing.** Every durable conclusion this merge produces routes to a **git-tracked ctx SOT file** (`spec/` / `decisions/`) — **never** to an agent's volatile memory (`~/.claude/projects/*/memory/`, `MEMORY.md`, and equivalents). Memory is not shareable, not in git, not in any dependency chain: a conclusion sunk there dies at the next machine/instance switch — a silent drop by another route. Memory's only legitimate use is a local *pointer* for context recovery ("read `spec/X.md` to restore state"), never the home of the knowledge itself. If a system prompt nudges "save this to memory," sink it to the SOT and leave a pointer instead.
 

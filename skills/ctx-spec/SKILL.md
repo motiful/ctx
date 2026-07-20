@@ -4,7 +4,7 @@ description: Writes specs, ADRs, architecture and design docs that an AI coding 
 license: MIT
 metadata:
   author: motiful
-  version: "1.6"
+  version: "1.7"
 ---
 
 # ctx-spec — Write Docs an Agent Can Build From
@@ -177,6 +177,7 @@ An ADR records **a decision that was actually MADE**, rich enough that **"why X,
 | `accepted` | Current; the decision is in force. |
 | `deprecated` | The decision was **retired and NOTHING replaces it** — it no longer applies. (Distinct from superseded.) |
 | `superseded by NNNN` | **Replaced by a specific new ADR.** Bidirectional link; old body left untouched. |
+| `rejected` | A choice that was **considered and declined before ever being adopted** — distinct from `deprecated` (which was accepted, then retired). Feeds the reject-log read-side scan (see `ctx-merge`) so a declined concept isn't quietly reintroduced under a new label. |
 
 **Live-log tag mapping.** A real project often tracks decisions inline with lightweight tags before they become formal ADRs. Map them: `[LOCKED]` = `accepted`; `[DRAFT]` = `proposed` (a decision about to land, not an open debate); `[OPEN]` = **not yet a decision at all** → it belongs in `progress/` (or a spec `[NEEDS CLARIFICATION]` block), NOT in `decisions/`. Only `[LOCKED]`/`[DRAFT]` graduate to an ADR; `[OPEN]` never does until it's decided.
 
@@ -247,7 +248,7 @@ Follows the lifetime class (global rule in `../ctx/references/consistency.md § 
 - **MUST** write a spec as **conclusions + constraints** (normative content). **NEVER** embed teaching, tutorials, discursive narrative, or option-comparison in a spec — that is Explanation bleeding into a normative doc; move it to a `reports/` doc (for review) or an ADR (the why).
 - **MAY** carry **INTENT** inline — a one-clause *so-that* that scopes a rule so the agent generalizes correctly (`X, so that Y`); this is the one "why" that stays, because deleting it changes edge-case conformance. **MUST NOT** embed **RATIONALE** ("why we chose X over Y") → that belongs in the ADR's `Considered options` + `Decision outcome`. **MUST** cut **BACKGROUND** (context the model already knows / history that changes no action).
 - **NEVER** treat a figure, example, or note as a binding requirement — illustrative content is informative, not normative. State the normative claim as a MUST/SHALL line; do not let a diagram imply it.
-- **MUST** run a term-operation consistency check before naming a new concept in a spec: if the term's full established meaning conflicts with the requirement it's attached to, drop the term and keep only the requirement (same gate as `skill-forge/references/skill-format.md § Term Usage`, adopted from `ctx-report`'s term-landing discipline).
+- **MUST** run a term-operation consistency check before naming a new concept in a spec: if the term's full established meaning conflicts with the requirement it's attached to, drop the term and keep only the requirement (same gate as `skill-forge/references/skill-format.md § Term Usage`'s Consistency gate, adopted from `ctx-report`'s `term-operation-consistency-gate`).
 
 ### Testable, versioned, machine-readable
 

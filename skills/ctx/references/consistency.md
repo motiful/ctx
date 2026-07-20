@@ -102,7 +102,7 @@ The format rules every folder in `ctx/` shares. Specialized folders (`reports/`,
 - **Zero-padded two digits: `01 02 … 99`**, extend to three only when a namespace is expected to pass 99. Zero-padding makes lexical order equal numeric order (`ls` sorts `01,02,…,10`; unpadded `1,10,2` does not). Consistent with ADR `NNNN` numbering.
 - **Per-namespace, monotonic, never reused.** Each folder that numbers (`reports/`, per-subsystem specs, `decisions/`) has its OWN counter starting at `01`. No single global counter across folders — that is unmaintainable.
 - **Archived numbers are not recycled.** A number consumed by an archived unit stays consumed; the next unit takes the next free number. (ADR numbering — 4-digit, sequential, never reused — is the canonical case; see ctx-spec.)
-- **Every durable doc carries a number** except the singletons named by role (`progress.md`, `overview.md`, `README.md`, `DESIGN.md`).
+- **Every durable doc carries a number** except the singletons named by role (`progress.md`, `overview.md`, `services.md`, `README.md`, `DESIGN.md`).
 
 ## Archive mechanics — by lifetime class
 

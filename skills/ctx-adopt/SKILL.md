@@ -4,7 +4,7 @@ description: Bring an EXISTING project (brownfield) under ctx with minimal disru
 license: MIT
 metadata:
   author: motiful
-  version: "1.1"
+  version: "1.2"
 ---
 
 # ctx-adopt — bring an existing project under ctx, minimally
@@ -21,7 +21,7 @@ whether that is a real folder or a symlink is a deployment detail.
 
 1. **NEVER restructure the user's existing directories.** Only ADD the `/ctx` mount + one pointer line.
 2. **Default to the lightest backend** (in-repo real dir). Upgrade only when separability is actually needed.
-3. **Reorganize the user's tree only when the user asks** — and even then guarantee one thing: ctx logic stays valid.
+3. **Reorganize the user's tree only when the user asks, or when building ctx makes a change unavoidable** — and even then guarantee one thing: ctx logic stays valid.
 
 ## Execution Procedure
 
@@ -61,8 +61,9 @@ else (neither):         the RUNNING AGENT writes its own native file
 # never force the user to switch vendors
 ```
 
-Fallback: the ctx skill `description` is system-prompt-resident and already says context lives in
-`/ctx`, so any agent with ctx loaded finds it even with no pointer file.
+Fallback: the ctx skill's `description` is system-prompt-resident, so any agent with ctx installed
+recognizes a ctx knowledge base is in play even with no pointer file — and once it loads the skill
+body, `/ctx` is the mount point stated there.
 Pointer line (one line): `Project context & docs live in ./ctx — managed by the ctx skills; apply their consistency rules when editing ctx docs.`
 
 ### EP3 — sort the scattered docs (DELEGATE — do not re-implement)
