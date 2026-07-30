@@ -73,6 +73,13 @@ Pair two moves, not a single umbrella technique:
 
 Before naming any concept STRUCTURE surfaces, run it through a **term-operation-consistency-gate**: does the term's full established meaning conflict with the operation you want it to carry? If yes, drop the term and keep only the operation — a term whose baggage fights the rule it's attached to is worse than an unlabeled rule.
 
+**Name the class.** When STRUCTURE surfaces several things that behave alike:
+
+- **MUST** give the class one name, so its boundary can be stated — an unnamed class can only be re-listed, never delimited (a nose is not a face; nor are nose + eyes + mouth).
+- **NEVER** count repeated rejection of candidates as progress: the gate above is a veto, and "no name" always passes a veto.
+- **NEVER** run a content-admission test (a delete test, a relevance test) on a *word* — a word is not a system behaviour, so the test returns "nothing is lost" every time.
+- If every candidate fails the gate, coin one and define it inline.
+
 ### Resolve hypocognition, don't mirror
 
 When the human names a felt-but-wordless gap in their own improvised words, find the established term for it and use that — don't parrot their phrase back dressed up as an answer. Anti-sycophancy applies the same way to a claim: verify it, don't rubber-stamp it because the human stated it with confidence.
