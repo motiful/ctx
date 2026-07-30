@@ -103,6 +103,7 @@ It does **NOT** ban handing every mapper the same shared context — a carried-f
 
 - **Q1 — which conclusion in this batch's sources never reached the framing *and* has no disposition in the ledger?** The classic silent drop.
 - **Q1b — for each claim the ledger dispositions as `keep → <destination>`, go to that destination and read: is the content actually there?** A ledger row asserting a landing is the one kind of absence an auditor will not go looking for — the row itself says the checking is done. Empirically the sharpest of the three: in the first batch that ran this procedure, four of eight losses were catchable *only* by this question, and every one of them sat behind a row reading `keep`.
+- **Q1c — for each assertion carrying normative weight in the framing, go find the sentence in the sources: is it there?** Q1 and Q1b both hunt the *silent drop*; this one hunts the other failure mode this skill names — the **stain**. Without it the audit tests one of the two and reports clean. In the first batch it was the only question that caught six fabrications, among them an unsourced design decision and a `MUST` contradicting its own figure two lines above.
 - **Q2 — which entry present in the previous framing is absent from this one?** Squeezed out during carry-forward — the failure mode rolling has that a single pass does not. Mechanize it: keep the framing in git, and `git diff`'s deletion lines are the candidate list; the auditor only judges "replaced by better wording" vs "gone".
 
 Any question returning a finding → **the batch is not done.** Backfill, then re-audit.
@@ -173,7 +174,7 @@ Walk this checklist **by hand** — it is a discipline, not a test suite. Nothin
 - For each merged conclusion: named-target ∧ coverage-split ∧ boundary ∧ destination.
 - For each deferral: target-file-written ∧ un-defer-trigger recorded.
 - No silent partial merges ∧ faithfulness audit run by a *different* agent and its findings acted on.
-- **Rolling merge, per batch:** the ledger covers every extracted claim ∧ `unplaceable` answered in words (not a silent empty list) ∧ the audit's Q1, Q1b and Q2 all came back clean.
+- **Rolling merge, per batch:** the ledger covers every extracted claim ∧ `unplaceable` answered in words (not a silent empty list) ∧ the audit's Q1, Q1b, Q1c and Q2 all came back clean.
 
 Fail any → not done. Fix the gap, re-walk.
 
