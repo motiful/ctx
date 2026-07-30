@@ -102,9 +102,15 @@ It does **NOT** ban handing every mapper the same shared context — a carried-f
 **Audit every batch, not once at the end.** An end-of-run audit has to re-read the whole corpus to answer "which source claim never arrived" — the same arithmetic that forced batching in the first place, merely postponed. Per batch, the audit reads only this batch's sources plus the framing delta, and STEP 6's "must be a different agent" is satisfied for free by opening a fresh one each batch. It asks exactly two questions, which are the two ways a rolling merge loses things:
 
 - **Q1 — which conclusion in this batch's sources never reached the framing *and* has no disposition in the ledger?** The classic silent drop.
+- **Q1b — for each claim the ledger dispositions as `keep → <destination>`, go to that destination and read: is the content actually there?** A ledger row asserting a landing is the one kind of absence an auditor will not go looking for — the row itself says the checking is done. Empirically the sharpest of the three: in the first batch that ran this procedure, four of eight losses were catchable *only* by this question, and every one of them sat behind a row reading `keep`.
 - **Q2 — which entry present in the previous framing is absent from this one?** Squeezed out during carry-forward — the failure mode rolling has that a single pass does not. Mechanize it: keep the framing in git, and `git diff`'s deletion lines are the candidate list; the auditor only judges "replaced by better wording" vs "gone".
 
-Either question returning a finding → **the batch is not done.** Backfill, then re-audit.
+Any question returning a finding → **the batch is not done.** Backfill, then re-audit.
+
+**Backfill discipline — the second pass has its own two failure modes.** Both were observed on the first batch ever to run this procedure, in this order:
+
+- **The fix injects what the sources never said.** Round one dropped content; round two invented it. Filling a hole is generative work, and a merger that marks its inferences scrupulously in normal operation will state them flatly while patching. So the re-audit MUST ask *"does the backfill contain anything with no source?"* — not merely re-check the original findings — and the backfilling agent MUST be told to mark an inference as an inference. **This is the worse direction: an invented claim leaves no trace that it was ever absent, while a dropped one at least still exists in the source.**
+- **The fix patches the instance, not the class.** When a finding names two examples of one pattern — say, the truncated second half of a bulleted source note — the backfill repairs exactly those two and leaves the rest of the pattern standing. Name the *class* in the finding and require a re-sweep of it, or the same shape returns next batch wearing a different line number.
 
 ## Source reliability — declare it before merging
 
@@ -167,7 +173,7 @@ Walk this checklist **by hand** — it is a discipline, not a test suite. Nothin
 - For each merged conclusion: named-target ∧ coverage-split ∧ boundary ∧ destination.
 - For each deferral: target-file-written ∧ un-defer-trigger recorded.
 - No silent partial merges ∧ faithfulness audit run by a *different* agent and its findings acted on.
-- **Rolling merge, per batch:** the ledger covers every extracted claim ∧ `unplaceable` answered in words (not a silent empty list) ∧ the audit's Q1 and Q2 both came back clean.
+- **Rolling merge, per batch:** the ledger covers every extracted claim ∧ `unplaceable` answered in words (not a silent empty list) ∧ the audit's Q1, Q1b and Q2 all came back clean.
 
 Fail any → not done. Fix the gap, re-walk.
 
