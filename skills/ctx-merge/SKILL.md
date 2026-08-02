@@ -54,6 +54,12 @@ apply(human_clicks(choices))               # non-conflicting superset defaults t
 #   destination); fail any → fix the gap, re-walk. Then sink:
 sink(draft, ledger)                        # edit spec in place / append decisions per destination
 apply("../ctx/references/consistency.md")  # single-source · same-change · verify-canonical · gate — before committing
+
+# STEP 8 — Hand back in VALUE terms (automatic, not on request) — see § The value handback
+handback = value_handback(batch)           # what the SOT now asserts that it could not before
+Skill("ctx-report", handback)              # the format; this step owns WHAT goes in it
+# A merge that ends at sink() is not finished. If the human has to ask "so what happened?",
+# this step did not run — and no count of claims, losses, or agents answers that question.
 ```
 
 > The lines above are a **procedure you execute by hand**, not an API. The faithfulness audit and the four-constraint walk name disciplines you must carry out (below) — no such tool exists; do not treat them as callable.
@@ -129,6 +135,23 @@ Any question returning a finding → **the batch is not done.** Backfill, then r
 - **The fix patches the instance, not the class.** When a finding names two examples of one pattern — say, the truncated second half of a bulleted source note — the backfill repairs exactly those two and leaves the rest of the pattern standing. Name the *class* in the finding and require a re-sweep of it, or the same shape returns next batch wearing a different line number.
 
   **Then size the class from the source, never from the ledger** — this is where the sweep quietly fails even once you are doing it. One batch swept every class it had named and reported each one clean; an auditor re-derived the same classes from the source documents and got: owner-quote blocks 11 → **24** (thirteen of them landed nothing, and eight had no ledger row at all), `§Sources` entries 3 → **22**, whole tables 6 → **16** (three landed nothing), editorial ellipses "zero" → **165**, scope-limiting sentences 13 → **50**. Nothing was lied about. **A class defined by counting ledger rows has exactly the ledger's field of view, and what is missing is by definition outside it** — so the sweep confirms the ledger against itself and returns clean with the losses untouched. **Enumerate the class's members from the source with a command, then check each against the artifact.** The tell is a class whose size is a round-ish small number that matches how many rows mention it.
+
+## The value handback (STEP 8) — a merge is for the conclusions, not for the merging
+
+**The unit of value is a conclusion the SOT now carries that it did not carry before, stated in the product's own terms.** Not a Question that was added, not a claim that was dispositioned, not a loss that was recovered — those are the machinery. The owner commissioned a merge to make the product know things; the artifacts are how, and nobody asked how.
+
+The failure is stable and worth naming because it survives every other kind of quality. A batch closes, the merger reports agent counts, landing rates, losses found, checks that failed, rules earned — all accurate, all measured, all reproducible — and the owner reads it and says *"I still don't see what improved."* **They are right, and accuracy cannot fix it, because the report answered a different question.** The process is what the merger just spent its entire effort on, so it is what is loaded and vivid; the owner spent none of that effort and is asking what the thing they are building now knows.
+
+**So write each item as a statement the SOT can now make.** The form is *"ctx now answers &lt;question&gt;, and the answer is &lt;answer&gt;"* — or, when a batch settles rather than adds, *"&lt;claim&gt; is now closed, and the closing is &lt;terminal state&gt;."* Two tests:
+
+- **Could the owner act on it?** *"We added Q-117"* is not actionable; *"there is no runnable benchmark for this category, so the evaluation has to be self-built, and here are its four measurement targets"* is.
+- **Does it survive deleting the batch?** If the sentence stops making sense once you remove the words *batch*, *ledger*, *audit*, and *landing*, it was about the machinery.
+
+Order by what the product gained, not by what cost the most effort. **A capability outranks a defect even when the defect took ten times the work** — and a defect earns its place only when the owner asks or when it changes how the next batch runs.
+
+**Run it automatically at every batch close, and at every round close.** Not when asked. Being asked *"what happened?"* is the defect this step exists to prevent — by the time the question is put, the owner has already read an artifact that failed to answer it. The report format, the term discipline, and the verdict list belong to `ctx-report`; **this step owns only what goes in.**
+
+**In a rolling merge, report the LEVEL, not just the count — because the count falls while the value rises.** Sources ordered newest-first means the late batches read the *earliest* material, where the vocabulary and the rules had not been invented yet and what exists instead is the founding intent: what is this for, who is it for, what is its scope, how would we know it works. On one 22-source thread the per-batch yield of new Questions ran 25, 26, 9, 4, 5, 3, 4 — a curve that reads as exhaustion. It was not: the last batch's four were *what is the scope of the thing*, *how does it prove it works*, *what are its claims anchored to*, and *how autonomous should it be* — none of them a rule, all of them load-bearing on identity, and **none answerable from any later source, because by then everyone had stopped asking.** **A falling count with a rising level is the expected shape of reading backwards; report both, or the owner reads diminishing returns into the most valuable batch.**
 
 ## Source reliability — declare it before merging
 
