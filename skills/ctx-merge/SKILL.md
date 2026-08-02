@@ -55,9 +55,13 @@ apply(human_clicks(choices))               # non-conflicting superset defaults t
 sink(draft, ledger)                        # edit spec in place / append decisions per destination
 apply("../ctx/references/consistency.md")  # single-source · same-change · verify-canonical · gate — before committing
 
-# STEP 8 — Hand back in VALUE terms (automatic, not on request) — see § The value handback
-handback = value_handback(batch)           # what the SOT now asserts that it could not before
+# STEP 8 — Self-verify, then hand back in VALUE terms (automatic, not on request)
+landed = self_verify(batch)                # (a) did the round follow its OWN declared procedure?
+                                           # (b) enumerate what is now IN the artifact — read it, not the ledger
+handback = value_handback(landed)          # what the SOT now asserts that it could not before
 Skill("ctx-report", handback)              # the format; this step owns WHAT goes in it
+# The two halves are one step on purpose: you cannot state what a round was worth
+# without first confirming what actually landed. See § The round-close self-check.
 # A merge that ends at sink() is not finished. If the human has to ask "so what happened?",
 # this step did not run — and no count of claims, losses, or agents answers that question.
 ```
@@ -136,7 +140,18 @@ Any question returning a finding → **the batch is not done.** Backfill, then r
 
   **Then size the class from the source, never from the ledger** — this is where the sweep quietly fails even once you are doing it. One batch swept every class it had named and reported each one clean; an auditor re-derived the same classes from the source documents and got: owner-quote blocks 11 → **24** (thirteen of them landed nothing, and eight had no ledger row at all), `§Sources` entries 3 → **22**, whole tables 6 → **16** (three landed nothing), editorial ellipses "zero" → **165**, scope-limiting sentences 13 → **50**. Nothing was lied about. **A class defined by counting ledger rows has exactly the ledger's field of view, and what is missing is by definition outside it** — so the sweep confirms the ledger against itself and returns clean with the losses untouched. **Enumerate the class's members from the source with a command, then check each against the artifact.** The tell is a class whose size is a round-ish small number that matches how many rows mention it.
 
-## The value handback (STEP 8) — a merge is for the conclusions, not for the merging
+## The round-close self-check (STEP 8a) — verify your own round before you value it
+
+**Every batch and every round ends by checking its own work, before anything is handed back.** Not the faithfulness audit — that is STEP 6, it runs on a different agent, and it asks *did the content survive*. This one is the merger's own, it asks two questions the audit does not, and its output is the input to the value handback.
+
+- **Did this round do what it said it would?** A round declares checks — a landing read-back, a class sweep, a contradiction screen, a stop-signal self-check. **For each one: did it run, and did it produce output somebody can re-run?** A declared check with no transcribed output did not happen, however sincerely it was intended. The failure mode is specific and repeats: *naming a limitation feels like handling it*, so a round can write down exactly why its method is insufficient and then run that method again.
+- **What is actually in the artifact now?** **Enumerate it by reading the destination, not by reading the ledger.** The ledger records intent; the artifact holds the result, and the whole reason STEP 6 exists is that those diverge. This enumeration is not a count — it is a list of the conclusions the artifact can now state.
+
+**Why the two halves are one step.** You cannot say what a round was worth without knowing what landed, and a value claim built on the ledger's word inherits every gap the ledger has. Coupling them also makes the check *self-interested*: the merger now needs an accurate landing list for its own report, rather than producing one because a rule says to. **A round that cannot enumerate what it deposited has not finished, no matter how clean its counts are.**
+
+**It also makes the checking better-aimed, which is the second reason to do it.** A generic audit asks "is anything missing?" against the whole surface. A round that has just written its own value statement knows exactly which conclusions it is claiming credit for — **so it can verify those first, and hardest.** The claims a round is proudest of are the ones whose loss would be least visible, because everyone assumes the headline landed.
+
+## The value handback (STEP 8b) — a merge is for the conclusions, not for the merging
 
 **The unit of value is a conclusion the SOT now carries that it did not carry before, stated in the product's own terms.** Not a Question that was added, not a claim that was dispositioned, not a loss that was recovered — those are the machinery. The owner commissioned a merge to make the product know things; the artifacts are how, and nobody asked how.
 
