@@ -164,6 +164,16 @@ The skeleton above is the *model* — what a correct ctx folder looks like. Whet
 
 When the deliverable is a **shippable artifact** (a skill, an app, a video) whose docs must NOT ship with it, keep the docs in a sibling **`<name>-ctx/`** (external, never shipped), managed by *this* methodology. **That `<name>-ctx/` folder itself IS the knowledge root** — it plays the role of `ctx/`, so its children are `spec/ decisions/ progress/ reports/ scratch/` **directly** (no nested `ctx/`). The published artifact = the output; the external store = *why it is the way it is* (its spec + its ADRs). This is where a design decision like "we **supersede** old ADRs in place (never archive them), because a superseded decision is live knowledge" is recorded — so the reasoning is never lost. **This collection dogfoods it exactly: this skill ships as `ctx/`, its own making lives in the sibling `ctx-ctx/`.**
 
+**With an external store the routing question becomes three-way, not two, and the third bucket is the one that gets misfiled.** Ask of any conclusion: **does it change a file that ships?**
+
+| | Test | Goes to |
+|---|---|---|
+| **Product truth** | It changes a shipped file — a spec, the README, the guide, the packaging metadata | the **artifact** |
+| **Rationale** | It does not ship, but it explains why a shipped file says what it says | the **external store** (`spec/` + `decisions/`) |
+| **Neither** | It does not ship and it grounds no shipped decision — go-to-market judgement, a script of things to say, a figure with a shelf life, advice aimed at one named person | **not a spec at all**; give it its own axis (a backlog, a strategy file) and say where |
+
+The third row is the one that leaks, because its contents are *true, well-argued, and about the product* — which reads as belonging. Two guards: a shelf-life claim is not a spec claim (a market number ages, a constraint does not), and **a piece of copy is not a criterion** — "say this sentence" and "here is the rule for choosing what to say" are different objects, and only the second is durable. Note the boundary runs *through* branding rather than around it: the wording that ships in a README is product truth, while *who the product is for* is rationale — the first is in the artifact, the second is the reason the first reads that way.
+
 ## Cross-cutting rules & the read-side habit (pointers, not mechanics)
 
 The prescriptive cross-cutting MUSTs — **single-source · same-change (incl. code↔doc) · verify-against-canonical · the gate** — plus the shared format conventions live in **[`references/consistency.md`](references/consistency.md)**, which every skill loads before it commits. In particular the **gate** (author the acceptance checklist *before* you execute; validate before you claim "done") is **consistency.md Rule 4** — `ctx` names the pattern behind spec acceptance-criteria / progress task-completion / report self-verification / the ctx-folder DoD; consistency.md holds the mechanics.
