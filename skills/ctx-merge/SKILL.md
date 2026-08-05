@@ -334,6 +334,8 @@ The merge artifact is read by future agents without your context. Implicit answe
 
 Deferring = merging into the future-backlog. Same four constraints, plus: name the backlog file AND write the entry in the same operation (no phantom deferral); record the **un-defer trigger** ("after X exists"); never split "half deferred, half locked" in one merge.
 
+**Before surfacing a deferred item again, re-test its premise against the latest conclusions — the newest-first contract governs the backlog too, not just the merged doc.** A backlog is a side channel: entries are written when a decision has no receiver, and the natural test for "still open?" is *"did anyone answer it?"* — which is not discriminating. A question that was **rejected** leaves a sentence; a question whose **framework was replaced** leaves nothing, because no later sentence ever mentions it. So *dead* and *open* are indistinguishable under that test, and every dead one gets escalated to the human as if live. **Test instead: does the framework this entry presupposes still exist in the current conclusions?** And read the receiving block itself — a struck-through line, a `MUST` downgraded to `NOT`, or a recorded owner ruling is the evidence; the mere existence of a pointer is not, because the merge's own rule keeps a Question alive after its answer dies.
+
 ## Verification (before declaring a merge done)
 
 Walk this checklist **by hand** — it is a discipline, not a test suite. Nothing here is a callable assertion; you read each line and confirm it holds.
